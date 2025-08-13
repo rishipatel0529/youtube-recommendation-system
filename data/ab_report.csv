@@ -1,0 +1,7 @@
+experiment,variant,likes,skips,n,like_rate
+Phase3-vs-Baseline-rand-seed-0,A,4,3,10,0.4000
+Phase3-vs-Baseline-rand-seed-0,B,4,1,8,0.5000
+Phase3-vs-Baseline-seed-42,A,15,0,15,1.0000
+Phase3-vs-Baseline-seed-42,B,12,0,12,1.0000
+phase3-vs-baseline,A,3,1,11,0.2727
+phase3-vs-baseline,B,1,0,2,0.5000

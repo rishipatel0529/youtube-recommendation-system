@@ -1,0 +1,760 @@
+2025-08-11T05:54:59Z	k=10	trend=0	cat=	temp_blocked=0	cands=10
+2025-08-11T05:55:26Z	k=10	trend=0	cat=	temp_blocked=0	cands=10
+2025-08-11T05:56:15Z	k=10	trend=0	cat=	temp_blocked=0	cands=10
+2025-08-11T05:57:05Z	k=10	trend=0	cat=	temp_blocked=0	cands=10
+2025-08-11T05:57:44Z	k=10	trend=0	cat=	temp_blocked=0	cands=10
+2025-08-11T05:58:12Z	k=10	trend=0	cat=	temp_blocked=0	cands=10
+2025-08-11T05:59:09Z	k=10	trend=0	cat=	temp_blocked=0	cands=10
+2025-08-11T05:59:43Z	k=10	trend=0	cat=	temp_blocked=0	cands=10
+2025-08-11T06:00:07Z	k=10	trend=0	cat=	temp_blocked=0	cands=10
+2025-08-11T06:00:30Z	k=10	trend=0	cat=	temp_blocked=0	cands=10
+2025-08-11T06:02:41Z	k=10	trend=0	cat=	temp_blocked=0	cands=10
+{"ts": 1754894855, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754894925, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754894946, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754894989, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754895029, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754895056, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754895087, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754895126, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754895160, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754895186, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754895228, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754895251, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754895275, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754895304, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754895325, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754928888, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754929081, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754929105, "event": "why", "video_id": "F5njPH3jHHA", "reasons": []}
+{"ts": 1754929127, "event": "why", "video_id": "IL1p8MnoNEw", "reasons": []}
+{"ts": 1754929137, "event": "trace", "video_id": "IL1p8MnoNEw"}
+{"ts": 1754929203, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754929262, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754929290, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754929330, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754929371, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754929392, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754929435, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754929486, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754929518, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754929639, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754929687, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754929777, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754929841, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754929910, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754929985, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754930003, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754930032, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754930081, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754930149, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754930270, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754930386, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754930576, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754930605, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754930629, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754930680, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754930754, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754930802, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754930834, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754930870, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754930903, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754930964, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754930997, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754931031, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754935237, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754935380, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754935423, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754935521, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754935556, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754935647, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754935690, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754935755, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754935779, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754935810, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754935876, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754935901, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754939080, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754939116, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754939154, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754939369, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754939408, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754939497, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754939665, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754939723, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754939829, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754939902, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754939930, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754939996, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754940160, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754940191, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754940216, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754940364, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754940409, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754940434, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754940541, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754940569, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754940593, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754940663, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754940763, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754940778, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754942746, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754942751, "event": "ab_start", "name": "phase3-vs-baseline"}
+{"ts": 1754942762, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754942913, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754942947, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754942994, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754943138, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754943169, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754943207, "event": "ab_stop", "name": "phase3-vs-baseline"}
+{"ts": 1754943218, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754959931, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754959938, "event": "ab_start", "name": "phase3-vs-baseline"}
+{"ts": 1754959950, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754960188, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754960211, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754960237, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754960285, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754960304, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754960329, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754960365, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754960396, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754960418, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754960440, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754960462, "event": "page", "k": 10, "trending": false, "category": "28", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754960491, "event": "page", "k": 10, "trending": false, "category": "28", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754960512, "event": "page", "k": 10, "trending": false, "category": "28", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754960536, "event": "page", "k": 10, "trending": false, "category": "28", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754960567, "event": "page", "k": 10, "trending": false, "category": "28", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754960582, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754960624, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754960658, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754960678, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754960717, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754960818, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754960844, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754960867, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754960925, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754960976, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754961016, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754961037, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754961061, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754961097, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754961229, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754961251, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754961280, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754961320, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754961356, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754961413, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754961446, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754961478, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754961512, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754961557, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754961582, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754961620, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754961665, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754961698, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754961728, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754961762, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754961769, "event": "why_not", "token": "Perfect", "answer": "Channel not blocked; specific videos may still be outranked."}
+{"ts": 1754961820, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754961873, "event": "why", "video_id": "vGmQrRVEvJ8", "reasons": []}
+{"ts": 1754961893, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754961927, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": "phase3-vs-baseline"}
+{"ts": 1754961937, "event": "ab_stop", "name": "phase3-vs-baseline"}
+{"ts": 1754961948, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 1, "ab": ""}
+{"ts": 1754966988, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754967165, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754967183, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754967208, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754967239, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754967262, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754967292, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754967331, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754967362, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754967411, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754967432, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754967517, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754967537, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754967566, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754967591, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754967614, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754967645, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754967666, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754967819, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754967841, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754967862, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754967891, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754967919, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754967940, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754967956, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754967982, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754968011, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754968050, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754968076, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754968109, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754968135, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754968178, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754968230, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754968276, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754968298, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754968348, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754968379, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754968409, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754968440, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754968492, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754968505, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754968533, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754968587, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754968617, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754968665, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754968729, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754968764, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754968973, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754968981, "event": "ab_start", "name": "phase3-vs-baseline\u001b[C"}
+{"ts": 1754968992, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline\u001b[C"}
+{"ts": 1754969010, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline\u001b[C"}
+{"ts": 1754969030, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline\u001b[C"}
+{"ts": 1754969048, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline\u001b[C"}
+{"ts": 1754969070, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline\u001b[C"}
+{"ts": 1754969088, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline\u001b[C"}
+{"ts": 1754969113, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline\u001b[C"}
+{"ts": 1754969142, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline\u001b[C"}
+{"ts": 1754969170, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline\u001b[C"}
+{"ts": 1754969195, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline\u001b[C"}
+{"ts": 1754969219, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline\u001b[C"}
+{"ts": 1754969221, "event": "ab_stop", "name": "phase3-vs-baseline\u001b[C"}
+{"ts": 1754969232, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754971389, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754971401, "event": "ab_start", "name": "phase3-vs-baseline"}
+{"ts": 1754971412, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754971495, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754971506, "event": "ab_debug", "video_id": "7Cxh9qN6eS8", "variant": "A", "liked": 1}
+{"ts": 1754971518, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754971552, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754971572, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754971612, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754971638, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754971670, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754971711, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754971714, "event": "ab_stop", "name": "phase3-vs-baseline"}
+{"ts": 1754971725, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754972278, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754972283, "event": "ab_start", "name": "phase3-vs-baselin"}
+{"ts": 1754972330, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754972333, "event": "ab_start", "name": "phase3-vs-baseline"}
+{"ts": 1754972345, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754972404, "event": "ab_debug", "video_id": "CaGReHurPTU", "variant": "A", "liked": 1}
+{"ts": 1754972416, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754972435, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754972461, "event": "ab_debug", "video_id": "AIGxl8c02lM", "variant": "A", "liked": 0}
+{"ts": 1754972473, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754972497, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754972521, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754972541, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754972560, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754972581, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754972603, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754972629, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754972641, "event": "ab_stop", "name": "phase3-vs-baseline"}
+{"ts": 1754972653, "event": "page", "k": 10, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754973003, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754973017, "event": "ab_start", "name": "phase3-vs-baseline"}
+{"ts": 1754973034, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754973041, "event": "ab_debug", "video_id": "bsTxc6iwPb4", "variant": "A", "liked": 1}
+{"ts": 1754973053, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754973076, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754973086, "event": "ab_debug", "video_id": "mkgTZ6YorkE", "variant": "A", "liked": 0}
+{"ts": 1754973108, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754973132, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754973164, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754973192, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754973226, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754973250, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754973259, "event": "ab_debug", "video_id": "Wzu1ZlkGjOI", "variant": "A", "liked": 0}
+{"ts": 1754973270, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754973290, "event": "ab_debug", "video_id": "Z2Vw9BmEbx0", "variant": "B", "liked": 0}
+{"ts": 1754973303, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754973321, "event": "ab_debug", "video_id": "9tvKby6YNJQ", "variant": "A", "liked": 0}
+{"ts": 1754973333, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754973367, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754973386, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754973418, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754973466, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754973497, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754973519, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754973525, "event": "ab_debug", "video_id": "ni0mRssHkws", "variant": "A", "liked": 0}
+{"ts": 1754973539, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754973551, "event": "ab_stop", "name": "phase3-vs-baseline"}
+{"ts": 1754973563, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754974192, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1754974199, "event": "ab_start", "name": "phase3-vs-baseline"}
+{"ts": 1754974211, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754974238, "event": "ab_debug", "video_id": "BvAK1jdYoFY", "variant": "B", "liked": 1}
+{"ts": 1754974251, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754974278, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754974299, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754974355, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754974383, "event": "ab_debug", "video_id": "yu4_gkzUR_o", "variant": "A", "liked": 0}
+{"ts": 1754974396, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754974418, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754974424, "event": "ab_debug", "video_id": "P-jE6P8iBQg", "variant": "A", "liked": 0}
+{"ts": 1754974436, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754974490, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": "phase3-vs-baseline"}
+{"ts": 1754974494, "event": "ab_stop", "name": "phase3-vs-baseline"}
+{"ts": 1754974505, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755019052, "event": "page", "k": 15, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755024168, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755024230, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755024306, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755024397, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755024431, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755024513, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755024536, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755024553, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755024606, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755024642, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755024715, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755024747, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755024771, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755024818, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755025681, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755025773, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755025858, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755026013, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755026120, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755026174, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755026207, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755026249, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755026312, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755026359, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755026389, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755026408, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755026439, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755026477, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755026508, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755026534, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755026560, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755026588, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755028682, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755029148, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755029361, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755029424, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755029473, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755029495, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755029512, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755029548, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755029615, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755029654, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755032155, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755032367, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755032387, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755032446, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755034539, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755034616, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755034680, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755034849, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755035240, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755035286, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755035327, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755035371, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755035794, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755035935, "event": "ab_start", "name": "Phase3-vs-Baseline"}
+{"ts": 1755035950, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline"}
+{"ts": 1755036434, "event": "ab_start", "name": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036451, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036451, "event": "ab_debug", "video_id": "2KxYuIJnudA", "variant": "A", "liked": 1}
+{"ts": 1755036481, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036500, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036500, "event": "ab_debug", "video_id": "YmZb2JetjD4", "variant": "A", "liked": 0}
+{"ts": 1755036517, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036517, "event": "ab_debug", "video_id": "X1xub3f7ubY", "variant": "B", "liked": 1}
+{"ts": 1755036534, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036556, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036556, "event": "ab_debug", "video_id": "dYvr9RPfxlM", "variant": "A", "liked": 1}
+{"ts": 1755036573, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036573, "event": "ab_debug", "video_id": "AM7lmbpnGpg", "variant": "B", "liked": 0}
+{"ts": 1755036590, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036590, "event": "ab_debug", "video_id": "UmNNSxqN2Ko", "variant": "B", "liked": 0}
+{"ts": 1755036609, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036628, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036645, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036665, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036683, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036701, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036701, "event": "ab_debug", "video_id": "Sah8ik9Lto4", "variant": "A", "liked": 0}
+{"ts": 1755036718, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036737, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036737, "event": "ab_debug", "video_id": "q28pBYxAcuw", "variant": "B", "liked": 1}
+{"ts": 1755036755, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036755, "event": "ab_debug", "video_id": "y1YipYh_aJ8", "variant": "B", "liked": 1}
+{"ts": 1755036774, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036774, "event": "ab_debug", "video_id": "mZqhzv9xR6g", "variant": "A", "liked": 0}
+{"ts": 1755036792, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036811, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036838, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036838, "event": "ab_debug", "video_id": "9ym2Q-vOSac", "variant": "A", "liked": 1}
+{"ts": 1755036857, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036857, "event": "ab_debug", "video_id": "yTRCjwyDjto", "variant": "A", "liked": 1}
+{"ts": 1755036878, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036897, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036917, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036917, "event": "ab_debug", "video_id": "G4Jl-1-l8bQ", "variant": "B", "liked": 0}
+{"ts": 1755036939, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036960, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036985, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755036985, "event": "ab_debug", "video_id": "IrjziH4G1qw", "variant": "B", "liked": 1}
+{"ts": 1755037005, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037024, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037043, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037059, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037074, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037092, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037110, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037127, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037145, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037161, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037204, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037225, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037243, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037262, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037280, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037296, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037312, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037328, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037344, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037362, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037379, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037395, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037414, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037429, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037448, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037464, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037480, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037495, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037512, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037528, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037544, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037561, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037578, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037594, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037610, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037626, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037642, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037658, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037673, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037689, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037706, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037723, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037739, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037755, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037773, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037788, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037804, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037820, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037836, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037851, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037867, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037883, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037899, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037914, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037931, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037946, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037962, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037977, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755037994, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755038009, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755038025, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755038041, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755038057, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755038073, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755038089, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755038105, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755038120, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755038136, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755038152, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755038167, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755038167, "event": "ab_stop", "name": "Phase3-vs-Baseline-rand-seed-0"}
+{"ts": 1755038182, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755038674, "event": "ab_start", "name": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755038691, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755038691, "event": "ab_debug", "video_id": "FmMF_vedFL8", "variant": "B", "liked": 1}
+{"ts": 1755038707, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755038707, "event": "ab_debug", "video_id": "Kc-CQwbdddU", "variant": "A", "liked": 1}
+{"ts": 1755038723, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755038739, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755038755, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755038755, "event": "ab_debug", "video_id": "YVWBHqzOvnk", "variant": "B", "liked": 1}
+{"ts": 1755038771, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755038771, "event": "ab_debug", "video_id": "CMwavuOA5KE", "variant": "A", "liked": 1}
+{"ts": 1755038786, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755038803, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755038803, "event": "ab_debug", "video_id": "_xmggtAL5-A", "variant": "A", "liked": 1}
+{"ts": 1755038820, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755038835, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755038851, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755038867, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755038867, "event": "ab_debug", "video_id": "f5p_RRSNyJo", "variant": "A", "liked": 1}
+{"ts": 1755038883, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755038883, "event": "ab_debug", "video_id": "8WnvbxtXuIU", "variant": "A", "liked": 1}
+{"ts": 1755038899, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755038915, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755038931, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755038946, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755038962, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755038978, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755038978, "event": "ab_debug", "video_id": "hN_T1KokoGQ", "variant": "A", "liked": 1}
+{"ts": 1755038994, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039010, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039230, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039245, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039262, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039277, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039294, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039473, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039489, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039504, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039520, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039536, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039551, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039567, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039583, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039599, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039615, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039630, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039646, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039662, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039677, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039693, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039708, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039724, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039739, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039755, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039772, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039787, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039803, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039819, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039834, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039850, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039865, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039881, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039897, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039914, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039930, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039945, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039961, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755039977, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755041642, "event": "ab_start", "name": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755041660, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755041660, "event": "ab_debug", "video_id": "DRQTpIdOwk0", "variant": "B", "liked": 1}
+{"ts": 1755041675, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755041675, "event": "ab_debug", "video_id": "ghu37mOq6Us", "variant": "A", "liked": 1}
+{"ts": 1755041691, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755041691, "event": "ab_debug", "video_id": "RygikaUoRU4", "variant": "A", "liked": 1}
+{"ts": 1755041707, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755041707, "event": "ab_debug", "video_id": "mAOiLasRgbM", "variant": "B", "liked": 1}
+{"ts": 1755041722, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755041722, "event": "ab_debug", "video_id": "KpBReRXh_QI", "variant": "B", "liked": 1}
+{"ts": 1755041738, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755041738, "event": "ab_debug", "video_id": "VQCARSV0bac", "variant": "A", "liked": 1}
+{"ts": 1755041753, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755041753, "event": "ab_debug", "video_id": "0vTRCfPWK2w", "variant": "B", "liked": 1}
+{"ts": 1755041768, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755041784, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755041784, "event": "ab_debug", "video_id": "IlcSGQvDKzM", "variant": "B", "liked": 1}
+{"ts": 1755041800, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755041816, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755041831, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755041831, "event": "ab_debug", "video_id": "Jo8R_Nqay70", "variant": "A", "liked": 1}
+{"ts": 1755041847, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755041847, "event": "ab_debug", "video_id": "ihEtpPQCADQ", "variant": "A", "liked": 1}
+{"ts": 1755041863, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755041863, "event": "ab_debug", "video_id": "206O9S9GLbg", "variant": "B", "liked": 1}
+{"ts": 1755041878, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755041894, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755041909, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755041925, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755041940, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755041940, "event": "ab_debug", "video_id": "js5tf0moni4", "variant": "A", "liked": 1}
+{"ts": 1755041956, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042176, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042191, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042206, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042222, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042238, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042253, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042269, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042285, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042301, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042301, "event": "ab_debug", "video_id": "PZWZ-lVI-M4", "variant": "A", "liked": 1}
+{"ts": 1755042316, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042332, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042348, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042364, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042379, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042395, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042411, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042427, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042442, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042458, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042473, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042491, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042509, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042524, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042673, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042690, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042707, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042777, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755042793, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755043758, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755044280, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755044297, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755044313, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755044330, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755045387, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755046709, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755048614, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755049741, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755050696, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755052439, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755052454, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755052470, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755052486, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755052502, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755052517, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755052533, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755052550, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755052565, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755052582, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755052598, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755052613, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755052630, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755052646, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054108, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054124, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054141, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054157, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054172, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054188, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054204, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054219, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054235, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054251, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054267, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054282, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054298, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054314, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054329, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054345, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054361, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054376, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054392, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054408, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054424, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054440, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054457, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054473, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054473, "event": "ab_stop", "name": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054488, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755054881, "event": "ab_start", "name": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054898, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054898, "event": "ab_debug", "video_id": "A6Ga-OH2qrw", "variant": "B", "liked": 1}
+{"ts": 1755054914, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054914, "event": "ab_debug", "video_id": "KTUfGtQ_iNY", "variant": "A", "liked": 1}
+{"ts": 1755054930, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054946, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054963, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054963, "event": "ab_debug", "video_id": "0xah5jMflcI", "variant": "B", "liked": 1}
+{"ts": 1755054979, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054995, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755054995, "event": "ab_debug", "video_id": "BaXx2Z0ogWQ", "variant": "B", "liked": 1}
+{"ts": 1755055014, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055032, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055032, "event": "ab_debug", "video_id": "1rC6zU5EkIM", "variant": "B", "liked": 1}
+{"ts": 1755055049, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055066, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055083, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055099, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055099, "event": "ab_debug", "video_id": "hyFrdjJi-i4", "variant": "A", "liked": 1}
+{"ts": 1755055115, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055130, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055146, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055162, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055178, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055193, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055209, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055225, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055241, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055256, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055272, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055289, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055306, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055322, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055338, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055355, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055372, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055388, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055403, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055419, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055435, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055451, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055468, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055484, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055499, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055515, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055530, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055547, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055562, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055578, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055597, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055613, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055631, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055646, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055662, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055678, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055694, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055709, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055726, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055742, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055758, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055773, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055789, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055805, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055821, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055837, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055852, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055868, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055885, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055902, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055917, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055934, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055950, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055966, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055983, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755055999, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755056015, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755056031, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755056047, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755056062, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755056078, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755056094, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755056109, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755056125, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755056141, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755056157, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755056173, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755056189, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755056204, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755056220, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755056236, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755056251, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755056267, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755056282, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755056298, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755056315, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755056331, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755056347, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755056363, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": "Phase3-vs-Baseline-seed-42"}
+{"ts": 1755060239, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755061023, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
+{"ts": 1755063747, "event": "page", "k": 40, "trending": false, "category": "", "temp_blocked": 0, "ab": ""}
