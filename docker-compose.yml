@@ -1,0 +1,21 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    volumes:
+      - ./:/app
+    environment:
+      - YT_API_KEY=${YT_API_KEY}
+      - YTCLI_DB=/app/data/store.sqlite3
+      - LONG_MIN_SEC=${LONG_MIN_SEC-180}
+    ports:
+      - "8000:8000"
+  ui:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.ui
+    depends_on:
+      - api
+    ports:
+      - "8501:8501"
