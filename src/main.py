@@ -6,6 +6,7 @@ from collections import defaultdict, Counter
 from .utils import load_env
 from . import store, youtube, recommender, categories, ranker
 from .resolve_channel import resolve_channel_ref
+from typing import Optional, List, Dict
 
 # --- knobs ---
 MIN_LONG_SEC = int(os.getenv("LONG_MIN_SEC", "180"))
@@ -30,6 +31,7 @@ _trending_only  = False  # session toggle
 BRAND_STOPS = {"official", "episodes", "full", "channel", "tv", "network", "studios", "production"}
 
 PAGE_SIZE = int(os.getenv("PAGE_SIZE", "10"))  # show 10 items per page
+RELAX_CAPS_IN_SEARCH = os.getenv("SEARCH_RELAX_CAPS", "1").lower() in {"1","true","yes"}
 _search_query = None                           # active search text (None = off)
 
 # per-session memory of recent pages + new session state
@@ -45,6 +47,9 @@ _ab_name = None
 _ab_page_map = {}      # video_id -> "A"/"B" assignment for the current page
 _last_contrib = {}     # video_id -> feature contributions for trace/why
 
+_search_nextpage_block = set()
+
+API_FAST = os.getenv("API_FAST", "1").lower() in {"1","true","yes"}
 
 # NN re-ranker (optional)
 try:
@@ -56,6 +61,40 @@ except Exception:
 
 
 # ---------------- helpers ----------------
+def _seed_from_local_cache(query: str, max_results=FALLBACK_FETCH_TOTAL):
+    """Search the local DB (titles, channel, tags) for query text. No network."""
+    q = (query or "").strip().lower()
+    if not q:
+        return []
+
+    toks = [t for t in re.split(r"\W+", q) if t]
+    if not toks:
+        return []
+
+    vids = store.fetch_all_videos() or []
+    scored = []
+    for v in vids:
+        title   = (v.get("title") or "").lower()
+        channel = (v.get("channel_title") or "").lower()
+        tags    = " ".join([t.lower() for t in (v.get("tags") or []) if isinstance(t, str)])
+        hay     = f"{title} {channel} {tags}"
+
+        # simple token match score
+        score = sum(hay.count(t) for t in toks)
+        if score <= 0:
+            continue
+
+        # keep long-form only (same rules you use elsewhere)
+        dur_ok = int(v.get("duration_sec") or 0) >= MIN_LONG_SEC
+        if not dur_ok or looks_short_title(v.get("title")):
+            continue
+
+        scored.append((score, int(v.get("view_count", 0)), v))
+
+    # by score desc, then views desc
+    scored.sort(key=lambda kv: (kv[0], kv[1]), reverse=True)
+    return [kv[2] for kv in scored[:max_results]]
+
 
 def _round_robin_by_channel(ranked, id_to_video, cap, k):
     buckets = defaultdict(list)
@@ -103,6 +142,21 @@ def brand_key(v):
     stem = " ".join(toks[:3]).strip()
     return stem or (v.get("channel_id") or "").strip().lower()
 
+_MODEL_CACHE = None
+_MODEL_KEY = None
+
+def _make_model_key(all_videos):
+    # cheap key: (count, last_id) — good enough for this project
+    return (len(all_videos), all_videos[-1]["id"] if all_videos else "")
+
+def _get_model(all_videos):
+    global _MODEL_CACHE, _MODEL_KEY
+    key = _make_model_key(all_videos)
+    if _MODEL_CACHE is None or _MODEL_KEY != key:
+        _MODEL_CACHE = recommender.build_vectors(all_videos)
+        _MODEL_KEY = key
+    return _MODEL_CACHE
+
 def expand_candidates_mixed(picked_id):
     rel = youtube.related(picked_id, max_results=FALLBACK_FETCH_TOTAL)
     sn, dur = {}, 0
@@ -115,10 +169,10 @@ def expand_candidates_mixed(picked_id):
     want_bucket = _duration_bucket(dur)
 
     pool_similar, pool_same, pool_explore = [], [], []
-
+        
     if q:
         try:
-            res = youtube.search_by_keywords(q, max_results=FALLBACK_FETCH_TOTAL)
+            res = youtube.search_smart(q, max_results=FALLBACK_FETCH_TOTAL)
             if ch_id:
                 res = [v for v in res if v.get("channel_id") != ch_id]
             if want_bucket != "unknown":
@@ -128,6 +182,7 @@ def expand_candidates_mixed(picked_id):
             pool_similar = res
         except Exception:
             pass
+
 
     if ch_id:
         try:
@@ -168,6 +223,38 @@ def expand_candidates_mixed(picked_id):
     random.shuffle(picked)
     if picked:
         store.upsert_videos(picked)
+
+
+def set_search_query(q: str | None):
+    """Enable/disable search mode from the API/UI."""
+    q = (q or "").strip()
+    globals()["_search_query"] = q if q else None
+
+# Prefer channel uploads when the query looks like a channel (e.g. "@theb1m", "The B1M", channel URL)
+def _seed_from_channel_query(qtxt: str, max_results: int = FALLBACK_FETCH_TOTAL):
+    """
+    Try to resolve a channel from a user query like '@handle', channel URL, channel id,
+    or channel name, and return its recent uploads. Falls back to [] if not resolvable.
+    """
+    q = (qtxt or "").strip()
+    if not q:
+        return []
+
+    # resolve_channel_ref returns (channel_id, title, url) for URLs/ids/@handles/names
+    try:
+        ch_id, _title, _url = resolve_channel_ref(q)
+    except Exception:
+        ch_id = None
+
+    if not ch_id:
+        return []
+
+    try:
+        items = youtube.channel_uploads_videos(ch_id, max_results=max_results)
+    except Exception:
+        items = []
+
+    return items or []
 
 def list_unwatched(limit=200):
     return store.fetch_unwatched(limit=limit)
@@ -612,7 +699,7 @@ def pick_interactive(cands):
                 ch_id = cands[i-1].get("channel_id") or ""
                 ch_t  = cands[i-1].get("channel_title") or ""
                 if ch_id:
-                    ans = input(f"Block channel permanently: {ch_t or ch_id}? (y/N): ").strip().lower()
+                    ans = input(f"Block channel permanently: {ch_t or ch_id}? (y/n): ").strip().lower()
                     if ans == "y":
                         store.block_channel(ch_id, ch_t); print(f"Blocked channel: {ch_t or ch_id}")
                     else:
@@ -693,9 +780,21 @@ def like_feedback():
 def _with_jitter(ranked, eps=5e-3):
     return [(vid, score + random.uniform(-eps, eps)) for vid, score in ranked]
 
+def _effective_caps(k):
+    """
+    Returns (channel_cap, brand_cap, session_channel_cap) for the current context.
+    In search mode, we relax caps so you can see multiple items from the same channel.
+    """
+    if globals().get("_search_query") and RELAX_CAPS_IN_SEARCH:
+        # allow up to the page size from a single channel/brand, and loosen the session cap
+        return k, k, max(k, SESSION_CHANNEL_CAP)
+    return CHANNEL_CAP, BRAND_CAP, SESSION_CHANNEL_CAP
+
+
 # --- Light, automatic refresh when DB is small (every 3rd page) ---
 def _light_refresh_if_small():
-    """Every 3rd page, if DB is small, refresh popular + top-liked channel uploads."""
+    if API_FAST:
+        return
     global _page_counter
     _page_counter += 1
     if _page_counter % 3 != 0:
@@ -733,18 +832,51 @@ def _light_refresh_if_small():
 
 # ------------- Core recommendation -------------
 def recommend(k=20):
-    _light_refresh_if_small()  # NEW: occasionally expand pool when DB is small
+    _light_refresh_if_small()  # occasionally expand pool when DB is small
     global _session_pages, _ab_page_map, _last_contrib
 
-    # NEW: if search mode is active, pull fresh results into DB and remember seed IDs
+    # --- Search seeding (channel-first; then smart; then keywords) ---
     seed_ids = set()
+    seed_pool = []
     if globals().get("_search_query"):
+        qtxt = (_search_query or "").strip()
+
+        # one-page-only block (what you already had)
+        exclude_once = set(globals().get("_search_nextpage_block") or set())
+        globals()["_search_nextpage_block"] = set()
+
+        # (1) channel uploads – only if not fast mode (network)
+        if not API_FAST:
+            seed_pool = _seed_from_channel_query(qtxt)
+
+        # (2) smart search – only if not fast mode (network)
+        if not seed_pool and not API_FAST:
+            try:
+                seed_pool = youtube.search_smart(qtxt, max_results=FALLBACK_FETCH_TOTAL)
+            except Exception:
+                seed_pool = []
+
+        # (3) keyword search – only if not fast mode (network)
+        if not seed_pool and not API_FAST:
+            try:
+                seed_pool = youtube.search_by_keywords(qtxt, max_results=FALLBACK_FETCH_TOTAL)
+            except Exception:
+                seed_pool = []
+
+        # (4) NEW: local cache fallback (works in fast mode)
+        if not seed_pool:
+            seed_pool = _seed_from_local_cache(qtxt, max_results=FALLBACK_FETCH_TOTAL)
+
+        if seed_pool:
+            # safe even for local videos; upsert is a no-op for existing
+            store.upsert_videos(seed_pool)
+            seed_ids = {v.get("id") for v in seed_pool if v.get("id")}
+
         try:
-            res = youtube.search_by_keywords(_search_query, max_results=FALLBACK_FETCH_TOTAL)
-            if res: store.upsert_videos(res)
-            seed_ids = {v.get("id") for v in (res or []) if v.get("id")}
+            store.log_session_event("search_seed", q=qtxt, n=len(seed_ids))
         except Exception:
-            seed_ids = set()
+            pass
+
 
     all_videos = store.fetch_all_videos()
     if not all_videos:
@@ -766,25 +898,99 @@ def recommend(k=20):
     if not unwatched:
         return []
 
-    model = recommender.build_vectors(all_videos)
+    # EFFECTIVE CAPS (relaxed when searching)
+    local_ch_cap, local_brand_cap, local_session_cap = _effective_caps(k)
+
+    model = _get_model(all_videos)
     hist = history_rows(n=5000)
     last = hist[0][0] if hist else None
     user_vec = recommender.make_user_profile(model, all_videos, hist) if hist else None
 
+    # -------- EXCLUDES / COOLDOWN (RELAXED IN SEARCH) --------
     session_exclude = set().union(*_session_pages) if _session_pages else set()
+    if globals().get("_search_query"):                         # <--- NEW: 3c
+        session_exclude = set()                                # do not exclude prior page items in search
 
-    # NEW: add impression cooldown to exclusions
     recently_shown = set()
     try:
         recently_shown = store.get_recently_impressed_ids(IMPRESSION_TTL_HOURS, 1)
     except Exception:
         recently_shown = set()
+    if globals().get("_search_query"):                         # <--- NEW: 3c
+        recently_shown = set()                                 # drop cooldown in search
+
     full_exclude = set(watched_ids) | set(session_exclude) | recently_shown
+
+    # === Search-first path (long-form only) ===
+    if seed_ids:
+        id_to_video = {v["id"]: v for v in store.fetch_all_videos()}
+
+        # Build from seeded ids; ignore session/cooldown; respect one-page block
+        def _is_longform(v):
+            return int(v.get("duration_sec") or 0) >= MIN_LONG_SEC and not looks_short_title(v.get("title"))
+
+        try:
+            exclude_once  # defined above
+        except NameError:
+            exclude_once = set()
+
+        seed_pool = [
+            v for v in (id_to_video.get(vid) for vid in seed_ids if vid in id_to_video)
+            if v
+            and v["id"] not in watched_ids
+            and v["id"] not in exclude_once
+            and _is_longform(v)
+            and is_allowed_channel(v)
+        ]
+
+        if seed_pool:
+            # Prefer popular then recent within the seed
+            try:
+                seed_pool.sort(key=lambda v: (int(v.get("view_count", 0)), (v.get("published_at") or "")), reverse=True)
+            except Exception:
+                seed_pool.sort(key=lambda v: int(v.get("view_count", 0)), reverse=True)
+
+            out = []
+            from collections import defaultdict as _dd
+            ch_counts, brand_counts = _dd(int), _dd(int)
+
+            SEARCH_CHANNEL_CAP = PAGE_SIZE
+            SEARCH_BRAND_CAP   = PAGE_SIZE
+
+            for v in seed_pool:
+                ch = ((v.get("channel_id") or "").strip()
+                      or (v.get("channel_title") or "").strip().lower())
+                bk = brand_key(v)
+                if ch_counts[ch] >= SEARCH_CHANNEL_CAP:  continue
+                if brand_counts[bk] >= SEARCH_BRAND_CAP: continue
+                out.append(v); ch_counts[ch] += 1; brand_counts[bk] += 1
+                if len(out) >= k: break
+
+            # Remember: hide these only on the very next page, not forever
+            globals()["_search_nextpage_block"] = {v["id"] for v in out}
+
+            # IMPORTANT: no _session_pages append and no log_impressions in search   <--- NEW: 3a
+
+            try:
+                store.log_session_event(
+                    "page", k=k, trending=False, category=_category_filter or "",
+                    temp_blocked=len(_session_blocked),
+                    ab=_ab_name if _ab_active else "",
+                    search_q=_search_query
+                )
+            except Exception:
+                pass
+
+            return out[:k]
+
+    # If in SEARCH mode but we failed to seed anything, return empty (no general fallback).   <--- NEW: 3b
+    if globals().get("_search_query") and not seed_ids:
+        return []
 
     # --- Trending-only path ---
     if _trending_only:
         try:
-            if TRENDING_FETCH:
+            if TRENDING_FETCH and not API_FAST:
                 items = youtube.most_popular(max_results=FALLBACK_FETCH_TOTAL)
                 if items: store.upsert_videos(items)
         except Exception:
@@ -803,15 +1009,14 @@ def recommend(k=20):
             ch = ((v.get("channel_id") or "").strip()
                   or (v.get("channel_title") or "").strip().lower())
             bk = brand_key(v)
-            # NEW: enforce cross-page session cap
-            if _session_channel_counts[ch] >= SESSION_CHANNEL_CAP:   continue
-            if ch_counts[ch] >= CHANNEL_CAP:   continue
-            if brand_counts[bk] >= BRAND_CAP:  continue
+            if _session_channel_counts[ch] >= local_session_cap: continue
+            if ch_counts[ch] >= local_ch_cap:                    continue
+            if brand_counts[bk] >= local_brand_cap:              continue
             out.append(v); ch_counts[ch] += 1; brand_counts[bk] += 1
-            _session_channel_counts[ch] += 1  # NEW: bump session count
+            _session_channel_counts[ch] += 1
             if len(out) >= k: break
 
-        # === NN RE-RANK (trending path) ===
+        # NN re-rank (trending path)
         buffer = list(out)
         if USE_NN and nn_predict and buffer:
             ids = [b["id"] if "id" in b else b.get("video_id") for b in buffer]
@@ -828,7 +1033,6 @@ def recommend(k=20):
             _session_pages.append(this_page_ids)
             if len(_session_pages) > PAGE_MEMORY: _session_pages.pop(0)
 
-        # NEW: log impressions for cooldown
         try:
             store.log_impressions([v["id"] for v in out])
         except Exception:
@@ -841,7 +1045,7 @@ def recommend(k=20):
         return out[:k]
 
     # ------- Personalized w/ Phase-3 hooks -------
-    session_recent = _session_topic_freqs()  # (keep your originals if different)
+    session_recent = _session_topic_freqs()
     session_topics = _session_topic_freqs()
 
     want_ab = bool(_ab_active and _ab_name)
@@ -864,11 +1068,11 @@ def recommend(k=20):
         idsB = [vid for vid,_ in ranked_B]
         id_to_video = {v["id"]: v for v in all_videos}
 
-        # NEW: if in search mode, keep only search-seeded items
+        # In search mode, keep only seeded items
         if seed_ids:
             idsA = [vid for vid in idsA if vid in seed_ids]
             idsB = [vid for vid in idsB if vid in seed_ids]
-        
+
         from collections import defaultdict as _dd
 
         def _build_ab_page(idsA, idsB, k):
@@ -889,9 +1093,9 @@ def recommend(k=20):
                     ch = ((v.get("channel_id") or "").strip()
                           or (v.get("channel_title") or "").strip().lower())
                     bk = brand_key(v)
-                    if _session_channel_counts[ch] >= SESSION_CHANNEL_CAP: continue
-                    if ch_counts[ch] >= CHANNEL_CAP:                       continue
-                    if brand_counts[bk] >= BRAND_CAP:                      continue
+                    if _session_channel_counts[ch] >= local_session_cap: continue
+                    if ch_counts[ch] >= local_ch_cap:                     continue
+                    if brand_counts[bk] >= local_brand_cap:               continue
 
                     vv = dict(v); vv["ab_variant"] = owner
                     out.append(vv); seen_ids.add(vid)
@@ -901,7 +1105,6 @@ def recommend(k=20):
                     return idx, True
                 return idx, False
 
-            # alternate owners to keep A≈B; refill if one side fails
             while len(out) < k and (ia < len(idsA) or ib < len(idsB)):
                 owner = 'A' if cntA <= cntB else 'B'
                 if owner == 'A':
@@ -924,7 +1127,6 @@ def recommend(k=20):
         _ab_page_map = {v["id"]: v.get("ab_variant","A") for v in out}
         _last_contrib = {**contrib_A, **contrib_B}
 
-        # small debug line so you can see page balance
         try:
             a_ct = sum(1 for v in out if v.get("ab_variant") == "A")
             b_ct = sum(1 for v in out if v.get("ab_variant") == "B")
@@ -942,24 +1144,23 @@ def recommend(k=20):
         id_to_video = {v["id"]: v for v in all_videos}
         out, ch_counts, brand_counts = [], defaultdict(int), defaultdict(int)
 
-        # NEW: "ignored" penalty — demote items you've seen but never clicked
+        # "ignored" penalty
         try:
             vid_list = [vid for vid, _ in ranked[:k*3]]
             counts = store.get_impression_like_counts(vid_list)
             def _adj(vid, score):
                 imp, likes = counts.get(vid, (0,0))
                 no_clicks = max(0, imp - likes)
-                pen = 0.05 * min(3, no_clicks)   # 0, 0.05, 0.10, 0.15
+                pen = 0.05 * min(3, no_clicks)
                 return score - pen
             ranked = sorted(((vid, _adj(vid, s)) for vid, s in ranked), key=lambda x: x[1], reverse=True)
         except Exception:
             pass
 
-        # preliminary per-channel balancing
-        balanced_ids = _round_robin_by_channel(ranked, id_to_video, CHANNEL_CAP, k*2)
+        balanced_ids = _round_robin_by_channel(ranked, id_to_video, local_ch_cap, k*2)
         ranked = [(vid, 0.0) for vid in balanced_ids]
 
-        # NEW: if in search mode, keep only search-seeded items
+        # In search mode, keep only seeded items
         if seed_ids:
             ranked = [(vid, s) for (vid, s) in ranked if vid in seed_ids]
 
@@ -969,11 +1170,11 @@ def recommend(k=20):
             if not v or not is_longform(v) or not is_allowed_channel(v): continue
             ch = ((v.get("channel_id") or "").strip() or (v.get("channel_title") or "").strip().lower())
             bk = brand_key(v)
-            if _session_channel_counts[ch] >= SESSION_CHANNEL_CAP:   continue  # NEW
-            if ch_counts[ch] >= CHANNEL_CAP:   continue
-            if brand_counts[bk] >= BRAND_CAP:  continue
+            if _session_channel_counts[ch] >= local_session_cap:   continue
+            if ch_counts[ch] >= local_ch_cap:                      continue
+            if brand_counts[bk] >= local_brand_cap:                continue
             out.append(v); ch_counts[ch]+=1; brand_counts[bk]+=1
-            _session_channel_counts[ch] += 1  # NEW
+            _session_channel_counts[ch] += 1
             if len(out) >= k: break
 
         _ab_page_map = {}
@@ -990,7 +1191,6 @@ def recommend(k=20):
             and is_allowed_channel(v)
             and is_longform(v)
         ]
-        # NEW: restrict when searching
         if seed_ids:
             explore_pool = [v for v in explore_pool if v["id"] in seed_ids]
 
@@ -1003,11 +1203,11 @@ def recommend(k=20):
             if v["id"] in seen_ids: continue
             ch = ((v.get("channel_id") or "").strip() or (v.get("channel_title") or "").strip().lower())
             bk = brand_key(v)
-            if _session_channel_counts[ch] >= SESSION_CHANNEL_CAP:   continue  # NEW
-            if ch_counts[ch] >= CHANNEL_CAP:   continue
-            if brand_counts[bk] >= BRAND_CAP:  continue
+            if _session_channel_counts[ch] >= local_session_cap:   continue
+            if ch_counts[ch] >= local_ch_cap:                      continue
+            if brand_counts[bk] >= local_brand_cap:                continue
             out.append(v); ch_counts[ch]+=1; brand_counts[bk]+=1; added += 1
-            _session_channel_counts[ch] += 1  # NEW
+            _session_channel_counts[ch] += 1
             if added >= target_explore or len(out) >= k: break
 
     # Sub-first backfill
@@ -1015,7 +1215,6 @@ def recommend(k=20):
         subs_set = {s["channel_id"] for s in store.get_subscriptions()}
         sub_pool = [v for v in unwatched if (v.get("channel_id") or "") in subs_set and is_allowed_channel(v)]
         sub_pool = sorted(sub_pool, key=lambda x: x.get("view_count", 0), reverse=True)
-        # NEW: restrict when searching
         if seed_ids:
             sub_pool = [v for v in sub_pool if v["id"] in seed_ids]
 
@@ -1027,17 +1226,16 @@ def recommend(k=20):
             if not is_longform(v):   continue
             ch = ((v.get("channel_id") or "").strip() or (v.get("channel_title") or "").strip().lower())
             bk = brand_key(v)
-            if _session_channel_counts[ch] >= SESSION_CHANNEL_CAP:   continue  # NEW
-            if ch_counts[ch] >= CHANNEL_CAP:   continue
-            if brand_counts[bk] >= BRAND_CAP:  continue
+            if _session_channel_counts[ch] >= local_session_cap:   continue
+            if ch_counts[ch] >= local_ch_cap:                      continue
+            if brand_counts[bk] >= local_brand_cap:                continue
             out.append(v); ch_counts[ch]+=1; brand_counts[bk]+=1
-            _session_channel_counts[ch] += 1  # NEW
+            _session_channel_counts[ch] += 1
             if len(out) >= k: break
 
     # General popular backfill
     if len(out) < k:
         popular_pool = sorted(unwatched, key=lambda x: x.get("view_count", 0), reverse=True)
-        # NEW: restrict when searching
         if seed_ids:
             popular_pool = [v for v in popular_pool if v["id"] in seed_ids]
 
@@ -1049,11 +1247,11 @@ def recommend(k=20):
             if not is_longform(v) or not is_allowed_channel(v): continue
             ch = ((v.get("channel_id") or "").strip() or (v.get("channel_title") or "").strip().lower())
             bk = brand_key(v)
-            if _session_channel_counts[ch] >= SESSION_CHANNEL_CAP:   continue  # NEW
-            if ch_counts[ch] >= CHANNEL_CAP:   continue
-            if brand_counts[bk] >= BRAND_CAP:  continue
+            if _session_channel_counts[ch] >= local_session_cap:   continue
+            if ch_counts[ch] >= local_ch_cap:                      continue
+            if brand_counts[bk] >= local_brand_cap:                continue
             out.append(v); ch_counts[ch]+=1; brand_counts[bk]+=1
-            _session_channel_counts[ch] += 1  # NEW
+            _session_channel_counts[ch] += 1
             if len(out) >= k: break
 
     # === NN RE-RANK (final page) ===
@@ -1073,7 +1271,6 @@ def recommend(k=20):
         _session_pages.append(this_page_ids)
         if len(_session_pages) > PAGE_MEMORY: _session_pages.pop(0)
 
-    # NEW: log impressions for cooldown
     try:
         store.log_impressions([v["id"] for v in out])
     except Exception:
@@ -1282,6 +1479,55 @@ def main():
         # After an action, rebuild the buffer so watched/skipped items disappear
         buffer = None
         offset = 0
+
+
+# --- API wrappers (used by FastAPI) ---
+
+from typing import Optional, List, Dict
+
+_api_bootstrapped = False
+
+def _api_boot():
+    global _api_bootstrapped
+    if _api_bootstrapped:
+        return
+    try:
+        load_env()
+    except Exception:
+        pass
+    try:
+        store.init_db()
+    except Exception:
+        pass
+    try:
+        ensure_seed()  # pull initial most-popular and write into DB
+    except Exception:
+        pass
+    _api_bootstrapped = True
+
+def build_page(page: int, page_size: int, variant: str) -> list[dict]:
+    """
+    Build a page of results using your real recommender.
+    Must return dicts with keys: id, title, channel_title, duration_sec, why (list[str])
+    """
+    # Pull a larger slice then window it to the requested page
+    k = page * page_size * 2
+    items = recommend(k=k)  # your full logic
+    start = (page - 1) * page_size
+    out = items[start:start + page_size]
+    # Ensure 'why' is always present
+    for it in out:
+        it["why"] = it.get("why") or []
+    return out
+
+
+def set_trending(on):
+    """True = trending-only page building; False = personalized."""
+    globals()["_trending_only"] = bool(on)
+
+def set_category(category_id):
+    """Set active YouTube category id (or None to clear)."""
+    globals()["_category_filter"] = category_id
 
 if __name__ == "__main__":
     main()
