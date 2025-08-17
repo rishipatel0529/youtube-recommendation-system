@@ -8,13 +8,10 @@ subscriptions, feedback (watch/like/skip), and A/B report display.
 import streamlit as st, requests, os
 from html import escape
 
-# API base URL (from Streamlit secrets or env)
-try:
-    API = st.secrets["API_URL"]
-except Exception:
-    API = os.getenv("API_URL", "http://localhost:8000")
-
 st.set_page_config(page_title="YT Recs", layout="wide")
+
+# API base URL (from Streamlit secrets or env)
+API = os.getenv("API_URL", "http://127.0.0.1:8000")
 
 # Global CSS: YouTube-like typography & layout tweaks
 st.markdown("""
@@ -146,7 +143,8 @@ def api_get(path, **params):
 
 def api_post(path, payload):
     # POST request to backend API with JSON body.
-    r = requests.post(f"{API}{path}", json=payload, timeout=60); r.raise_for_status()
+    r = requests.post(f"{API}{path}", json=payload, timeout=180); r.raise_for_status()
+
     return r.json()
 
 def load_subs_set():

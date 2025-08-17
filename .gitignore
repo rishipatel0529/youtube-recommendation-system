@@ -25,8 +25,6 @@ env/
 # --- Local config / secrets
 .env
 *.env.local
-# keep a template:
-!.env.example
 
 # --- Data & runtime artifacts
 data/

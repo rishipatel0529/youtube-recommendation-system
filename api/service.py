@@ -11,6 +11,7 @@ from src.main import build_page, set_search_query, set_trending, set_category
 from src import store, categories
 from src.resolve_channel import resolve_channel_ref
 from src import youtube
+from collections import defaultdict
 
 try:
     from . import service as _self
