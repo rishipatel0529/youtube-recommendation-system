@@ -1,0 +1,62 @@
+# --- Python / tooling
+__pycache__/
+api/__pycache__/
+*.py[cod]
+*.pyo
+*.so
+*.egg-info/
+.dist/
+.build/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# --- Virtual envs
+.venv/
+venv/
+env/
+
+# --- Editors/OS
+.vscode/
+.idea/
+.DS_Store
+
+# --- Local config / secrets
+.env
+*.env.local
+# keep a template:
+!.env.example
+
+# --- Data & runtime artifacts
+data/
+!data/.keep
+*.db
+*.db.bak
+*.sqlite3
+*.log
+*_cache.json
+*.csv
+
+# Specific files from your tree:
+ab_report.csv
+history.csv
+liked_history.csv
+blocked_channels.csv
+subscriptions.csv
+session.log
+yt_video_cache.json
+view_counts_*.csv
+app.db
+app.db.bak
+store.sqlite3
+
+# --- Models / weights / artifacts
+*.pkl
+*.joblib
+*.pt
+*.bin
+*.onnx
+
+# --- Docker noise
+**/.cache/
