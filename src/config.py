@@ -1,6 +1,14 @@
+"""
+config.py — Environment-based configuration utilities.
+
+- Reads feature flags and runtime settings from environment variables
+- Provides helper for parsing booleans from env
+"""
+
 import os
 
 def bool_from_env(name: str, default: bool = False) -> bool:
+    # Parse boolean env var into True/False with default fallback.
     v = os.getenv(name)
     if v is None:
         return default

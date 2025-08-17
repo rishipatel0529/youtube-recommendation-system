@@ -1,15 +1,24 @@
-# src/fetch_subs_uploads.py
+"""
+fetch_subs_uploads.py — Fetch latest uploads from subscribed channels.
+
+Purpose:
+- Load environment and initialize DB.
+- Retrieve user subscriptions from DB.
+- For each channel, fetch recent uploads via YouTube API.
+- Insert/update fetched videos in local DB.
+"""
+
 import time
 from src.utils import load_env
 from src import store, youtube
 
-BATCH = 30      # channels per pass
-PER_CH = 10     # videos per channel
-SLEEP = 0.5     # polite pause
+BATCH = 30 # channels per pass
+PER_CH = 10 # videos per channel
+SLEEP = 0.5 # polite pause between requests
 
 def main():
-    load_env()          # ← load YOUTUBE_API_KEY, etc.
-    store.init_db()     # ← ensure tables exist
+    load_env() # load API keys/env vars
+    store.init_db() # ensure DB tables exist
 
     subs = store.get_subscriptions()
     if not subs:
@@ -27,7 +36,7 @@ def main():
                 all_items.extend(vids)
             except Exception:
                 pass
-            time.sleep(SLEEP)
+            time.sleep(SLEEP) # avoid hitting API too fast
         if all_items:
             store.upsert_videos(all_items)
             total += len(all_items)

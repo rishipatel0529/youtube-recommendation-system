@@ -1,22 +1,23 @@
 """
-Neural re-ranker that scores (user, item) pairs using:
-- user vector = mean of embeddings of liked/favorited videos
-- item vector = text embedding from video_text_embeds
-- features = [user_dot_item, item_vec] (+ optional view-count)
+nn_reranker.py — Train and use a neural re-ranking model for YouTube recommendations.
 
-Training is pointwise (BCE). You can train/eval and then use it to re-rank any candidate list.
+- User vector: mean of embeddings from liked/favorited videos
+- Item vector: precomputed text embedding from video_text_embeds
+- Features: [user⋅item dot product, item vector] (+ optional log(view_count))
+
+Training:
+1. Pointwise binary classification (BCE loss)
+2. Labels: likes/dislikes/favorites (with fallback to implicit negatives)
+3. Saves artifacts to: data/nn_reranker.pt, data/nn_config.json
 
 Usage:
-  # Train (uses your DB + log tables; falls back to favorites if likes are scarce)
+  Train a model (uses DB tables for labels + embeddings)
   python -m src.dl.nn_reranker --epochs 5 --lr 1e-3
 
-  # Score a list of video_ids (comma-separated) and print sorted by score desc
+Score specific video_ids and print sorted by score
   python -m src.dl.nn_reranker --predict v123,v456,v789
-
-Artifacts:
-  data/nn_reranker.pt   (model)
-  data/nn_config.json   (dim, model name, feature recipe)
 """
+
 from __future__ import annotations
 import argparse, os, json, sqlite3, random
 from dataclasses import dataclass
@@ -30,8 +31,7 @@ import torch.optim as optim
 from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import train_test_split
 
-# ===== DB glue =====
-
+# DB connection — uses src.store if available, else falls back to env var.
 try:
     from src import store
     def get_conn() -> sqlite3.Connection:
@@ -44,15 +44,17 @@ except Exception:
         return conn
 
 def _fetch_embed_map(conn: sqlite3.Connection, model_name: Optional[str]=None) -> Tuple[Dict[str,np.ndarray], int, str]:
+    # Fetch all embeddings for a given model (or freshest by updated_at).
     cur = conn.cursor()
     if model_name:
         cur.execute("SELECT video_id, dim, model, emb FROM video_text_embeds WHERE model=?", (model_name,))
     else:
-        # pick the most recent model in the table
-        cur.execute("""
+        cur.execute(
+            """
             SELECT video_id, dim, model, emb FROM video_text_embeds
             WHERE updated_at = (SELECT MAX(updated_at) FROM video_text_embeds)
-        """)
+            """
+        )
     rows = cur.fetchall()
     if not rows:
         raise RuntimeError("No embeddings found. Run: python -m src.dl.embed_text")
@@ -67,11 +69,13 @@ def _fetch_embed_map(conn: sqlite3.Connection, model_name: Optional[str]=None) -
     return embs, dim, model
 
 def _column_exists(conn: sqlite3.Connection, table: str, col: str) -> bool:
+    # Check if a column exists in a given table.
     cur = conn.cursor()
     cur.execute(f"PRAGMA table_info({table})")
     return any(r[1] == col for r in cur.fetchall())
 
 def _fetch_views(conn: sqlite3.Connection) -> Dict[str, float]:
+    # Return {video_id: log1p(views)} if views column is present in videos table.
     cur = conn.cursor()
     cols = [r[1] for r in cur.execute("PRAGMA table_info(videos)").fetchall()]
     id_col = "id" if "id" in cols else ("video_id" if "video_id" in cols else None)
@@ -85,23 +89,14 @@ def _fetch_views(conn: sqlite3.Connection) -> Dict[str, float]:
             out[vid] = float(v or 0.0)
         except Exception:
             out[vid] = 0.0
-    # log scale to stabilize
     for k in out:
         out[k] = np.log1p(out[k])
     return out
 
-# ===== User feedback mining =====
-
 def _fetch_positive_negative_ids(conn: sqlite3.Connection) -> Tuple[List[str], List[str]]:
-    """
-    Tries several common places to find labels:
-    - interactions/feedback table with label in {'Y','N'} or {1,0}
-    - ab_events table used by your A/B harness
-    - favorites/blocked as a weak proxy (favorites => positive)
-    """
+    # Pull labeled positive/negative video_ids from various possible feedback tables.
     cur = conn.cursor()
 
-    # Try interactions
     for table in ["interactions", "feedback", "user_feedback", "events"]:
         if not _table_exists(conn, table): 
             continue
@@ -118,8 +113,9 @@ def _fetch_positive_negative_ids(conn: sqlite3.Connection) -> Tuple[List[str], L
             if pos or neg:
                 return pos, neg
 
-    # Try AB log (schema: ab_events with fields video_id, label maybe)
+    # Fallback to ab_events
     if _table_exists(conn, "ab_events"):
+        # Check if a given table exists in sqlite.
         cols = [r[1] for r in cur.execute("PRAGMA table_info(ab_events)").fetchall()]
         if "video_id" in cols and "label" in cols:
             pos, neg = [], []
@@ -129,7 +125,7 @@ def _fetch_positive_negative_ids(conn: sqlite3.Connection) -> Tuple[List[str], L
             if pos or neg:
                 return pos, neg
 
-    # Fallback: favorites as positives; blocked as negatives
+    # Final fallback: favorites = pos, blocked = neg
     pos, neg = [], []
     if _table_exists(conn, "favorites"):
         for (vid,) in cur.execute("SELECT video_id FROM favorites"):
@@ -144,9 +140,8 @@ def _table_exists(conn: sqlite3.Connection, name: str) -> bool:
     cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (name,))
     return cur.fetchone() is not None
 
-# ===== Model =====
-
 class MLP(nn.Module):
+    # Simple feed-forward network for re-ranking score prediction.
     def __init__(self, input_dim: int):
         super().__init__()
         self.net = nn.Sequential(
@@ -161,25 +156,23 @@ class MLP(nn.Module):
 
 @dataclass
 class NNConfig:
+    # Configuration metadata for a trained NN reranker.
     dim: int
     use_views: bool
     model_name: str
 
-# ===== Utilities =====
-
 def _build_user_vector(pos_ids: List[str], embed_map: Dict[str,np.ndarray], dim: int) -> np.ndarray:
+    # Compute normalized mean embedding vector for a user's positive items.
     vecs = [embed_map[vid] for vid in pos_ids if vid in embed_map]
     if not vecs:
         return np.zeros(dim, dtype=np.float32)
     v = np.mean(np.vstack(vecs), axis=0)
-    # normalize
     n = np.linalg.norm(v) + 1e-12
     return (v / n).astype(np.float32)
 
-# ===== Dataset =====
-
 def _make_examples(pos_ids: List[str], neg_ids: List[str], embed_map: Dict[str,np.ndarray],
                    user_vec: np.ndarray, views: Dict[str, float], use_views: bool) -> Tuple[np.ndarray, np.ndarray]:
+    # Build training features/labels from positive and negative video_ids.
     X, y = [], []
     for vid in pos_ids:
         if vid not in embed_map: continue
@@ -205,9 +198,8 @@ def _make_examples(pos_ids: List[str], neg_ids: List[str], embed_map: Dict[str,n
     y = np.asarray(y, dtype=np.float32)
     return X, y
 
-# ===== Training / Eval / Predict =====
-
 def train(epochs: int=5, lr: float=1e-3, model_name: Optional[str]=None, seed: int=42, use_views: bool=True):
+    # Train a reranker using positive/negative labels from the DB.
     random.seed(seed); np.random.seed(seed); torch.manual_seed(seed)
 
     conn = get_conn()
@@ -215,7 +207,7 @@ def train(epochs: int=5, lr: float=1e-3, model_name: Optional[str]=None, seed: i
     views = _fetch_views(conn) if use_views else {}
     pos_ids, neg_ids = _fetch_positive_negative_ids(conn)
 
-    # If we don't have enough explicit negatives, sample from the unlabeled pool
+    # Bootstrap negatives if labels are scarce
     if len(neg_ids) < 5:
         all_ids = list(embed_map.keys())
         pool = [vid for vid in all_ids if vid not in set(pos_ids)]
@@ -229,22 +221,19 @@ def train(epochs: int=5, lr: float=1e-3, model_name: Optional[str]=None, seed: i
     if len(pos_ids) < 5 or len(neg_ids) < 5:
         print("[warn] Few labels found; training may be weak. Collect more likes/dislikes.")
 
-    # Build user vector from positives (favorites/likes). If none, zero.
     uvec = _build_user_vector(pos_ids, embed_map, dim)
 
-    # Make dataset
     X, y = _make_examples(pos_ids, neg_ids, embed_map, uvec, views, use_views)
     if not (np.any(y == 1.0) and np.any(y == 0.0)):
         raise RuntimeError("Need both positive and negative labels. Like a few and dislike a few, or enable implicit negatives.")
 
-    # ===== Stratified split with fallback ensuring both classes in val =====
     if np.unique(y).size > 1:
+        # Train/val split (fallback if stratify fails)
         try:
             Xtr, Xva, ytr, yva = train_test_split(
                 X, y, test_size=0.2, random_state=seed, stratify=y
             )
         except ValueError:
-            # Manual fallback: guarantee at least 1 pos/neg in val
             pos_idx = np.where(y == 1.0)[0]
             neg_idx = np.where(y == 0.0)[0]
             rng = np.random.default_rng(seed)
@@ -256,7 +245,6 @@ def train(epochs: int=5, lr: float=1e-3, model_name: Optional[str]=None, seed: i
             tr = np.setdiff1d(np.arange(len(y)), va, assume_unique=False)
             Xtr, ytr, Xva, yva = X[tr], y[tr], X[va], y[va]
     else:
-        # Shouldn't happen due to check above; simple split as last resort
         idx = np.arange(len(y)); np.random.shuffle(idx)
         split = int(0.8 * len(idx))
         tr, va = idx[:split], idx[split:]
@@ -282,6 +270,7 @@ def train(epochs: int=5, lr: float=1e-3, model_name: Optional[str]=None, seed: i
             loss.backward()
             opt.step()
             total += float(loss.item()) * len(idxb)
+        # Validation
         model.eval()
         with torch.no_grad():
             val_logits = model(Xv)
@@ -295,6 +284,7 @@ def train(epochs: int=5, lr: float=1e-3, model_name: Optional[str]=None, seed: i
     print("[save] data/nn_reranker.pt  and  data/nn_config.json")
 
 def _load_model() -> Tuple[MLP, Dict]:
+    # Load model weights + config from disk.
     ckpt = torch.load("data/nn_reranker.pt", map_location="cpu")
     model = MLP(ckpt["input_dim"])
     model.load_state_dict(ckpt["state_dict"])
@@ -304,6 +294,7 @@ def _load_model() -> Tuple[MLP, Dict]:
     return model, cfg
 
 def predict(video_ids: List[str]) -> List[Tuple[str, float]]:
+    # Score a list of video_ids with the trained model; return sorted [(id, score)].
     model, cfg = _load_model()
     conn = get_conn()
     embed_map, dim, _ = _fetch_embed_map(conn, cfg["model_name"])
@@ -334,6 +325,7 @@ def predict(video_ids: List[str]) -> List[Tuple[str, float]]:
     return out
 
 def main():
+    # CLI entrypoint: train a model or predict scores for given IDs.
     ap = argparse.ArgumentParser()
     ap.add_argument("--epochs", type=int, default=5)
     ap.add_argument("--lr", type=float, default=1e-3)

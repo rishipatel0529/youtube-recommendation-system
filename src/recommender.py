@@ -1,4 +1,12 @@
-# src/recommender.py
+"""
+recommender.py — Content-based + hybrid ranking for YouTube-style recommendations.
+
+- Builds TF-IDF vectors and metadata features from cached videos
+- Creates a recency-weighted user profile from watch history
+- Ranks with either learned linear model (ranker) or a manual fallback
+- Optional Phase-3 diversity via MMR and hybrid blending with CF (LightFM)
+"""
+
 import numpy as np
 import os, time, datetime
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -7,11 +15,11 @@ from sklearn.metrics.pairwise import cosine_similarity
 try:
     from . import ranker
 except ImportError:
-    import ranker  # fallback
+    import ranker # fallback
 
 from .feats import extract_hashtags, detect_language, duration_bucket, jaccard
 
-HYBRID_ALPHA = float(os.getenv("HYBRID_ALPHA", "0.5"))  # 0..1, higher favors content
+HYBRID_ALPHA = float(os.getenv("HYBRID_ALPHA", "0.5")) # 0..1, higher favors content
 USE_CF = os.getenv("USE_CF", "lightfm").lower()
 MIN_LONG_SEC = int(os.getenv("LONG_MIN_SEC", "180"))
 RECENT_BOOST_N = int(os.getenv("RECENT_BOOST_N", "10"))
@@ -20,38 +28,41 @@ USE_SUBS = os.getenv("USE_SUBS", "1").lower() in {"1","true","yes"}
 SUBS_MAX = int(os.getenv("SUBS_MAX", "300"))
 
 # Phase 3 knobs
-DIVERSITY_STRENGTH = float(os.getenv("DIVERSITY_STRENGTH", "0.25"))      # 0..1 (MMR lambda)
+DIVERSITY_STRENGTH = float(os.getenv("DIVERSITY_STRENGTH", "0.25")) # 0..1 (MMR lambda)
 FRESH_HALF_LIFE_DAYS = float(os.getenv("FRESH_BOOST_HALF_LIFE_DAYS", "14"))
-CREATOR_COOLDOWN = float(os.getenv("CREATOR_COOLDOWN", "0.35"))           # 0..1 penalty when same channel appeared this session
+CREATOR_COOLDOWN = float(os.getenv("CREATOR_COOLDOWN", "0.35")) # penalty for repeats
 
 def _looks_short_title(t: str) -> bool:
+    # Heuristic: title contains #short/#shorts/‘ shorts ’.
     t = (t or "").lower()
     return ("#short" in t) or ("#shorts" in t) or (" shorts " in t)
 
 def _is_longform_from_model(model, idx: int) -> bool:
+    # Return True if item at idx looks long-form given duration/title.
     dur = int(model["dur"][idx] or 0)
     title = model["titles"][idx] if "titles" in model else ""
     return (dur >= MIN_LONG_SEC) and (not _looks_short_title(title))
 
 def _to_epoch(s):
+    # Parse ISO8601 string to epoch seconds, else 0.
     if not s: return 0
     try:
-        # 2024-11-03T18:22:11Z
         dt = datetime.datetime.fromisoformat(s.replace("Z","+00:00"))
         return int(dt.timestamp())
     except Exception:
         return 0
 
 def _freshness_score(published_at_iso, half_life_days=14.0, now_ts=None):
+    # Exponential-decay freshness in [0,1]: 1 at publish time, 0.5 at half-life.
     now = int(now_ts or time.time())
     ts = _to_epoch(published_at_iso)
     if ts <= 0:
         return 0.0
     age_days = max(0.0, (now - ts) / 86400.0)
-    # exponential decay: score=1.0 at publish time; 0.5 at half-life
     return float(2.0 ** (-age_days / max(0.1, half_life_days)))
 
 def _age_days(published_at: str) -> int:
+    # Age in whole days from ISO8601, 0 on error.
     try:
         dt = datetime.datetime.fromisoformat((published_at or "").replace("Z","+00:00"))
         return max(0, int((datetime.datetime.now(datetime.timezone.utc) - dt).days))
@@ -59,6 +70,7 @@ def _age_days(published_at: str) -> int:
         return 0
 
 def build_vectors(videos):
+    # Vectorize titles+descriptions (TF-IDF) and collect per-video metadata.
     texts, ids, channels, views = [], [], [], []
     titles, descs, tags_list = [], [], []
     durs, langs, hashtags, cat_ids, pub = [], [], [], [], []
@@ -86,12 +98,13 @@ def build_vectors(videos):
     }
 
 def make_user_profile(model, videos, history_rows, decay=0.9):
+    # Build a recency-weighted sparse user vector from watch history.
     if not history_rows:
         return None
     id_to_idx = {vid: i for i, vid in enumerate(model["ids"])}
     weights, vecs = [], []
 
-    # history_rows newest-first; iterate oldest->newest so power grows toward recent
+    # Iterate oldest→newest so power grows toward most recent
     seq = history_rows[::-1]
     power = 1.0
     for j, (vid, _ts, dwell, disliked, skipped) in enumerate(seq):
@@ -101,7 +114,7 @@ def make_user_profile(model, videos, history_rows, decay=0.9):
         w = power
         if disliked or skipped:
             w *= -0.5
-        # RECENCY BOOST: multiply recent N watches
+        # Recency boost for latest N watches
         if j >= len(seq) - RECENT_BOOST_N:
             w *= RECENT_BOOST_FACTOR
         vecs.append(model["X"][i])
@@ -118,6 +131,7 @@ def make_user_profile(model, videos, history_rows, decay=0.9):
     return V
 
 def _stage1_topk(model, user_vec, last_vid, k=200):
+    # Retrieve a candidate pool by TF-IDF similarity (+blend with last video).
     ids = model["ids"]
     sims = cosine_similarity(user_vec, model["X"]).ravel() if user_vec is not None else np.zeros(len(ids))
     if last_vid is not None and last_vid in ids:
@@ -127,6 +141,7 @@ def _stage1_topk(model, user_vec, last_vid, k=200):
     return order[:min(k, len(order))], sims
 
 def _hist_prefs(model, history_rows, all_videos_map):
+    # Summarize history preferences: top language, duration bucket, hashtags, channel stats.
     if not history_rows:
         sub_set = set()
         if USE_SUBS:
@@ -138,7 +153,6 @@ def _hist_prefs(model, history_rows, all_videos_map):
         return {"lang": "unknown", "channel_boost": sub_set, "chan_success": {}}, "unknown", set()
 
     langs, chans, dur_buckets, hash_all = [], [], [], set()
-    # per-channel "like rate" for novelty/quality
     stats = {}
     for vid, _ts, dwell, disliked, skipped in history_rows:
         v = all_videos_map.get(vid)
@@ -168,7 +182,6 @@ def _hist_prefs(model, history_rows, all_videos_map):
             sub_set = set()
 
     boost = top_chans | sub_set
-    # success rate
     success = {}
     for c, d in stats.items():
         success[c] = (d["likes"] / d["n"]) if d["n"] else 0.0
@@ -177,6 +190,7 @@ def _hist_prefs(model, history_rows, all_videos_map):
 
 def _feature_row(model, idx, user_vec, last_vec, hist_lang_pref, hist_dur_pref, hist_hashtags,
                  session_recent_channels=None, session_topic_freqs=None, now_ts=None):
+    # Assemble per-item features used by the ranker (manual or learned).
     ids = model["ids"]; channels = model["channels"]; pop = model["pop"]
     dur = model["dur"][idx]; lang = model["lang"][idx]; tags = model["hashtags"][idx]
     sim_user = cosine_similarity(user_vec, model["X"][idx]).ravel()[0] if user_vec is not None else 0.0
@@ -189,15 +203,12 @@ def _feature_row(model, idx, user_vec, last_vec, hist_lang_pref, hist_dur_pref, 
     # freshness
     fresh = _freshness_score(model["published"][idx], half_life_days=FRESH_HALF_LIFE_DAYS, now_ts=now_ts)
 
-    # session creator cooldown (penalty if channel is in recent session)
+    # session penalties/bonuses
     cooldown = 1.0 if (session_recent_channels and channels[idx] in session_recent_channels) else 0.0
-
-    # novelty: channel unseen in history → positive boost
     seen_success = hist_lang_pref.get("chan_success", {}).get(channels[idx], None)
     novelty = 1.0 if seen_success is None else 0.0
-
-    # fatigue: if session_topic_freqs has many overlaps with this video's tags
     fatigue = 0.0
+
     if session_topic_freqs and tags:
         hits = sum(session_topic_freqs.get(t, 0) for t in tags)
         fatigue = 1.0 if hits >= 2 else (0.5 if hits == 1 else 0.0)
@@ -219,7 +230,7 @@ def _feature_row(model, idx, user_vec, last_vec, hist_lang_pref, hist_dur_pref, 
     }
 
 def _manual_score(fv):
-    # hand-tuned; cooldown/fatigue applied as penalties
+    # Hand-tuned linear weights; cooldown/fatigue as negative terms.
     W = {
         "sim_user": 0.50,
         "sim_last": 0.15,
@@ -230,14 +241,14 @@ def _manual_score(fv):
         "hashtag_overlap": 0.05,
         "fresh": 0.06,
         "novelty": 0.04,
-        "cooldown": -CREATOR_COOLDOWN,   # penalty
-        "fatigue": -0.10,                # penalty
+        "cooldown": -CREATOR_COOLDOWN, # penalty
+        "fatigue": -0.10, # penalty
     }
     s = sum(W[k] * fv[k] for k in W.keys())
     return s, W
 
 def explain_reasons(fv, subs_set=None, max_reasons=3):
-    """Return short human reasons from a feature row."""
+    # Produce short user-facing reason strings from a feature row.
     r = []
     if fv.get("sim_user", 0) > 0.35: r.append("topic match")
     if fv.get("hashtag_overlap", 0) >= 0.2: r.append("shared hashtags")
@@ -249,11 +260,7 @@ def explain_reasons(fv, subs_set=None, max_reasons=3):
     return r[:max_reasons]
 
 def _mmr_select(model, idx_list, scores, k=20, lam=0.75):
-    """
-    Maximal Marginal Relevance to promote diversity.
-    idx_list: candidate indices
-    scores: relevance scores aligned with idx_list
-    """
+    # Maximal Marginal Relevance selection to promote diversity among top items.
     if not idx_list: return []
     selected = []
     X = model["X"]
@@ -281,14 +288,15 @@ def _mmr_select(model, idx_list, scores, k=20, lam=0.75):
                 best_i, best_val = pos, val
         if best_i is None:
             break
-        S.append(ids[best_i])
         # keep alignment by removing chosen element
-        del ids[best_i]; del scores[best_i]
+        S.append(ids[best_i])
+        del ids[best_i]
+        del scores[best_i]
     return S
 
 def rank(model, user_vec, exclude_ids, k=20, last_video=None, history_rows=None, all_videos=None,
          session_recent_channels=None, session_topic_freqs=None, use_phase3=True, return_contribs=False):
-
+    # Primary content-based ranking pipeline with optional diversity and contributions.
     # freeze page size to avoid shadowing
     try:
         k_int = int(k)
@@ -299,7 +307,7 @@ def rank(model, user_vec, exclude_ids, k=20, last_video=None, history_rows=None,
     idxs, sims = _stage1_topk(model, user_vec, last_video, k=500)
     ids = model["ids"]
 
-    # Build allowed set
+    # Build allowed set (exclude, enforce long-form)
     exclude_ids = exclude_ids or set()
     allowed = []
     for idx in idxs:
@@ -315,15 +323,15 @@ def rank(model, user_vec, exclude_ids, k=20, last_video=None, history_rows=None,
     # Last vec
     lst_vec = model["X"][ids.index(last_video)] if (last_video in ids) else None
 
-    # Prefs
+    # History prefs
     rnk = ranker.load_model()
     hist_lang_pref, hist_dur_pref, hist_hash = _hist_prefs(
         model, history_rows or [], {v["id"]: v for v in (all_videos or [])}
     )
 
-    # Build features
+    # Build features for candidate set
     feats = []
-    keep = []   # (vid, fv, idx)
+    keep = [] # (vid, fv, idx)
     now_ts = int(time.time())
     for idx in allowed:
         vid = ids[idx]
@@ -341,7 +349,7 @@ def rank(model, user_vec, exclude_ids, k=20, last_video=None, history_rows=None,
 
     X2 = np.vstack(feats)
 
-    # choose scores
+    # Choose scores: learned linear vs manual fallback
     use_manual = False
     try:
         coef = getattr(rnk, "coef_", None)
@@ -372,7 +380,6 @@ def rank(model, user_vec, exclude_ids, k=20, last_video=None, history_rows=None,
         idx_list = [keep[j][2] for j in order[:topN]]
         rel = [float(scores[j]) for j in order[:topN]]
         mmr_idxs = _mmr_select(model, idx_list, rel, k=topN, lam=1.0 - DIVERSITY_STRENGTH)
-        # map back
         mmr_set = set(mmr_idxs)
         order = [j for j in order if keep[j][2] in mmr_set] + [j for j in order if keep[j][2] not in mmr_set]
 
@@ -384,25 +391,22 @@ def rank(model, user_vec, exclude_ids, k=20, last_video=None, history_rows=None,
             continue
         out.append((vid, float(scores[j])))
         if return_contribs:
-            # human-readable contributions
             if weights is not None:
-                # manual path
                 comp = {}
                 sc, W = _manual_score(fv)
-                for feat_name, wgt in W.items():  # <-- avoid shadowing k
+                for feat_name, wgt in W.items():
                     comp[feat_name] = float(wgt * fv.get(feat_name, 0.0))
                 age_pen = float(fv.get("_age_penalty_cache", 0.0))
                 comp["age_penalty"] = age_pen
                 comp["_total"] = float(sc + age_pen)
             else:
-                # learned model: just return the raw features
                 comp = {key: float(val) for key, val in fv.items() if isinstance(val, (int,float))}
                 comp["_total"] = float(scores[j])
             contribs[vid] = comp
         if len(out) >= k_int:
             break
 
-    # Backfill popular longform if needed
+    # Backfill popular long-form if needed
     if len(out) < k_int and all_videos is not None:
         watched = exclude_ids
         popular_pool = sorted(all_videos, key=lambda x: x.get("view_count", 0), reverse=True)
@@ -420,14 +424,15 @@ def rank(model, user_vec, exclude_ids, k=20, last_video=None, history_rows=None,
 
 def rank_hybrid(model, user_vec, exclude_ids, k=20, last_video=None, history_rows=None, all_videos=None,
                 session_recent_channels=None, session_topic_freqs=None, use_phase3=True, return_contribs=False):
-
+    
+    # Blend content-based scores with CF scores (LightFM) via HYBRID_ALPHA.
     # freeze page size
     try:
         k_int = int(k)
     except Exception:
         k_int = 20
 
-    # 1) content
+    # 1) Content
     content, contribs = rank(
         model, user_vec, exclude_ids, k=max(200, k_int), last_video=last_video,
         history_rows=history_rows, all_videos=all_videos,
@@ -437,7 +442,7 @@ def rank_hybrid(model, user_vec, exclude_ids, k=20, last_video=None, history_row
     )
     cb_scores = {vid: s for vid, s in content}
 
-    # 2) CF
+    # 2) CF (optional)
     cf_ids, cf_scores = [], np.array([])
     try:
         if USE_CF == "lightfm":
@@ -448,7 +453,7 @@ def rank_hybrid(model, user_vec, exclude_ids, k=20, last_video=None, history_row
     allowed = set(v["id"] for v in (all_videos or [])) - set(exclude_ids or set())
     cf_pairs = [(vid, float(sc)) for vid, sc in zip(cf_ids, cf_scores) if vid in allowed]
 
-    # 3) blend
+    # 3) Blend (normalize CF band to [0,1] then mix)
     blended = dict(cb_scores)
     if cf_pairs:
         cf_vals = np.array([sc for _vid, sc in cf_pairs], dtype=float)
@@ -457,7 +462,7 @@ def rank_hybrid(model, user_vec, exclude_ids, k=20, last_video=None, history_row
             for (vid, _), scn in zip(cf_pairs, cf_norm):
                 blended[vid] = blended.get(vid, 0.0) * HYBRID_ALPHA + (1.0 - HYBRID_ALPHA) * scn
 
-    # 4) final order
+    # 4) Final order
     ordered = sorted(blended.items(), key=lambda x: -x[1])
     out = []
     seen = set()

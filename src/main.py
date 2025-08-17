@@ -1,4 +1,13 @@
-# src/main.py
+"""
+src/main.py
+Main entry point for the recommendation system.
+
+- Loads environment config & initializes DB
+- Handles recommendation logic (personalized, trending, search, A/B testing)
+- Provides an interactive CLI for browsing, blocking, subscribing, etc.
+- Exposes API-friendly wrappers for serving recommendations
+"""
+
 import sys, time, os, random, re
 from tabulate import tabulate
 from collections import defaultdict, Counter
@@ -8,50 +17,49 @@ from . import store, youtube, recommender, categories, ranker
 from .resolve_channel import resolve_channel_ref
 from typing import Optional, List, Dict
 
-# --- knobs ---
+# knobs
 MIN_LONG_SEC = int(os.getenv("LONG_MIN_SEC", "180"))
-CHANNEL_CAP  = int(os.getenv("CHANNEL_CAP", "1"))     # max per channel per page
-BRAND_CAP    = int(os.getenv("BRAND_CAP", "1"))       # max per brand per page
-RANK_TOP_M   = int(os.getenv("RANK_TOP_M", "60"))     # consider top-M ranked before capping
-PAGE_MEMORY  = int(os.getenv("PAGE_MEMORY", "10"))    # remember last N pages to avoid repeats
+CHANNEL_CAP  = int(os.getenv("CHANNEL_CAP", "1")) # max per channel per page
+BRAND_CAP    = int(os.getenv("BRAND_CAP", "1")) # max per brand per page
+RANK_TOP_M   = int(os.getenv("RANK_TOP_M", "60")) # consider top-M ranked before capping
+PAGE_MEMORY  = int(os.getenv("PAGE_MEMORY", "10")) # remember last N pages to avoid repeats
 EXPLORATION_RATIO = float(os.getenv("EXPLORATION_RATIO", "0.2"))  # % of page from non-subs
 
-# NEW: persistent impression cooldown + cross-page channel cap
-IMPRESSION_TTL_HOURS = int(os.getenv("IMPRESSION_TTL_HOURS", "48"))  # suppress re-show for this many hours
-SESSION_CHANNEL_CAP  = int(os.getenv("SESSION_CHANNEL_CAP", "3"))    # max per channel across the session
+# persistent impression cooldown + cross-page channel cap
+IMPRESSION_TTL_HOURS = int(os.getenv("IMPRESSION_TTL_HOURS", "48")) # suppress re-show for this many hours
+SESSION_CHANNEL_CAP  = int(os.getenv("SESSION_CHANNEL_CAP", "3")) # max per channel across the session
 
-SIMILAR_RATIO        = 0.55
-SAME_CREATOR_RATIO   = 0.15
-EXPLORATORY_RATIO    = 0.30
+SIMILAR_RATIO = 0.55
+SAME_CREATOR_RATIO = 0.15
+EXPLORATORY_RATIO = 0.30
 FALLBACK_FETCH_TOTAL = 50
 
 TRENDING_FETCH  = os.getenv("TRENDING_FETCH", "1").lower() in {"1","true","yes"}
-_trending_only  = False  # session toggle
+_trending_only  = False # session toggle
 
 BRAND_STOPS = {"official", "episodes", "full", "channel", "tv", "network", "studios", "production"}
 
-PAGE_SIZE = int(os.getenv("PAGE_SIZE", "10"))  # show 10 items per page
+PAGE_SIZE = int(os.getenv("PAGE_SIZE", "10")) # show 10 items per page
 RELAX_CAPS_IN_SEARCH = os.getenv("SEARCH_RELAX_CAPS", "1").lower() in {"1","true","yes"}
-_search_query = None                           # active search text (None = off)
+_search_query = None # active search text (None = off)
 
 # per-session memory of recent pages + new session state
-_session_pages = []                 # list[set(video_id)]
-_session_blocked = set()            # set[channel_id]
-_category_filter = None             # category_id or None
-_session_channel_counts = defaultdict(int)  # NEW: creator quota across the session
-_page_counter = 0  # NEW: lightweight refresh cadence
+_session_pages = [] # list[set(video_id)]
+_session_blocked = set() # set[channel_id]
+_category_filter = None # category_id or None
+_session_channel_counts = defaultdict(int) # creator quota across the session
+_page_counter = 0 # lightweight refresh cadence
 
 # Phase 3: A/B + explainability state
 _ab_active = False
 _ab_name = None
-_ab_page_map = {}      # video_id -> "A"/"B" assignment for the current page
-_last_contrib = {}     # video_id -> feature contributions for trace/why
+_ab_page_map = {} # video_id -> "A"/"B" assignment for the current page
+_last_contrib = {} # video_id -> feature contributions for trace/why
 
 _search_nextpage_block = set()
 
 API_FAST = os.getenv("API_FAST", "1").lower() in {"1","true","yes"}
 
-# NN re-ranker (optional)
 try:
     from src.dl.nn_reranker import predict as nn_predict
     USE_NN = bool(int(os.getenv("NN_RERANK", "0")))
@@ -59,10 +67,9 @@ except Exception:
     USE_NN = False
     nn_predict = None
 
-
-# ---------------- helpers ----------------
+# helpers
 def _seed_from_local_cache(query: str, max_results=FALLBACK_FETCH_TOTAL):
-    """Search the local DB (titles, channel, tags) for query text. No network."""
+    # Search the local DB (titles, channel, tags) for query text. No network.
     q = (query or "").strip().lower()
     if not q:
         return []
@@ -84,17 +91,15 @@ def _seed_from_local_cache(query: str, max_results=FALLBACK_FETCH_TOTAL):
         if score <= 0:
             continue
 
-        # keep long-form only (same rules you use elsewhere)
+        # keep long-form only
         dur_ok = int(v.get("duration_sec") or 0) >= MIN_LONG_SEC
         if not dur_ok or looks_short_title(v.get("title")):
             continue
 
         scored.append((score, int(v.get("view_count", 0)), v))
 
-    # by score desc, then views desc
     scored.sort(key=lambda kv: (kv[0], kv[1]), reverse=True)
     return [kv[2] for kv in scored[:max_results]]
-
 
 def _round_robin_by_channel(ranked, id_to_video, cap, k):
     buckets = defaultdict(list)
@@ -146,7 +151,7 @@ _MODEL_CACHE = None
 _MODEL_KEY = None
 
 def _make_model_key(all_videos):
-    # cheap key: (count, last_id) — good enough for this project
+    # cheap key: (count, last_id)
     return (len(all_videos), all_videos[-1]["id"] if all_videos else "")
 
 def _get_model(all_videos):
@@ -182,7 +187,6 @@ def expand_candidates_mixed(picked_id):
             pool_similar = res
         except Exception:
             pass
-
 
     if ch_id:
         try:
@@ -226,7 +230,7 @@ def expand_candidates_mixed(picked_id):
 
 
 def set_search_query(q: str | None):
-    """Enable/disable search mode from the API/UI."""
+    # Enable/disable search mode from the API/UI.
     q = (q or "").strip()
     globals()["_search_query"] = q if q else None
 
@@ -274,10 +278,10 @@ def _is_allowed_channel(v, blocked_set):
             return False
     return True
 
-# ---------- Explainability helpers (session) ----------
+# Explainability helpers (session)
 
 def _session_recent_channels():
-    """Collect recent channels present across current session pages."""
+    # Collect recent channels present across current session pages.
     if not _session_pages: return set()
     ids = set().union(*_session_pages)
     ch = set()
@@ -288,7 +292,7 @@ def _session_recent_channels():
     return ch
 
 def _session_topic_freqs():
-    """Rough per-session topic counts from tags/hashtags."""
+    # Rough per-session topic counts from tags/hashtags.
     freq = Counter()
     if not _session_pages: return freq
     ids = set().union(*_session_pages)
@@ -301,7 +305,7 @@ def _session_topic_freqs():
     return freq
 
 def _why_not_token(token):
-    """Return a one-liner explaining why a given videoId/channelId would be filtered."""
+    # Return a one-liner explaining why a given videoId/channelId would be filtered.
     vids = store.fetch_all_videos()
     by_vid = {v["id"]: v for v in vids}
     watched = store.get_all_watched_ids_union_csv()
@@ -319,12 +323,11 @@ def _why_not_token(token):
             return f"Filtered: not in active category ({categories.label(_category_filter)})."
         return "Not filtered by core rules; likely outranked on this page."
     else:
-        # treat as channel id
         if token in blocked: return "Channel filtered: permanently blocked."
         if token in _session_blocked: return "Channel filtered: temp-blocked this session."
         return "Channel not blocked; specific videos may still be outranked."
 
-# ---------- UI helpers ----------
+# UI helpers
 
 def _cmd_help():
     print("""
@@ -427,7 +430,6 @@ def _reset_session():
     _ab_page_map = {}; _last_contrib = {}
     try: _session_blocked.clear()
     except NameError: pass
-    # NEW: clear cross-page creator quota
     try: _session_channel_counts.clear()
     except NameError: pass
     print("Session reset: trending OFF, category cleared, temp blocks cleared, page memory cleared.")
@@ -479,13 +481,12 @@ def _manage_temp_blocks():
 
 
 def subscribe_cmd(arg: str, current_page_items):
-    """Subscribe via # from list, id/url/@handle/name (resolved to a real channel id)."""
+    # Subscribe via # from list, id/url/@handle/name (resolved to a real channel id).
     arg = (arg or "").strip()
     if not arg:
         print("Usage: subscribe <#|id|url|@handle|name>")
         return
 
-    # number from the current page (1-based)
     if arg.isdigit():
         i = int(arg) - 1
         if 0 <= i < len(current_page_items):
@@ -495,7 +496,6 @@ def subscribe_cmd(arg: str, current_page_items):
             print(f"Subscribed: {ch_title} [{ch_id}]")
             return
 
-    # otherwise resolve id/url/handle/name
     cid, title, url = resolve_channel_ref(arg)
     if not cid:
         print("Couldn't resolve that channel. Try a channel URL, @handle, channel ID, or pick from the list.")
@@ -505,13 +505,12 @@ def subscribe_cmd(arg: str, current_page_items):
 
 
 def unsubscribe_cmd(arg: str, current_page_items):
-    """Unsubscribe via # from list, id/url/@handle/name (resolved to a real channel id)."""
+    # Unsubscribe via # from list, id/url/@handle/name (resolved to a real channel id).
     arg = (arg or "").strip()
     if not arg:
         print("Usage: unsubscribe <#|id|url|@handle|name>")
         return
 
-    # number from the current page (1-based)
     if arg.isdigit():
         i = int(arg) - 1
         if 0 <= i < len(current_page_items):
@@ -521,14 +520,12 @@ def unsubscribe_cmd(arg: str, current_page_items):
             print(f"Unsubscribed: {title} [{cid}]")
             return
 
-    # otherwise resolve
     cid, title, _ = resolve_channel_ref(arg)
     if not cid:
         print("Couldn't resolve that channel to unsubscribe.")
         return
     store.remove_subscription(cid)
     print(f"Unsubscribed: {title or cid} [{cid}]")
-
 
 def pick_interactive(cands):
     _print_status()
@@ -544,7 +541,7 @@ def pick_interactive(cands):
     for i, v in enumerate(cands, start=1):
         stamps = []
         if (v.get("channel_id") or "") in subs_set: stamps.append("[sub]")
-        # fresh within ~14 days
+        # fresh within around 14 days
         try:
             pub = (v.get("published_at") or "").replace("Z","+00:00")
             import datetime as _dt
@@ -580,17 +577,17 @@ def pick_interactive(cands):
         if x == "h": show_history(); continue
         if x in {"?","m"}: _cmd_help(); continue
 
-        # --- pagination ---
+        # pagination
         if x == "n":
             return None, "next"
 
-        # --- quick clear search ---
+        # quick clear search
         if x == "!":
             globals()["_search_query"] = None
             print("Search cleared.")
             return None, None
 
-        # --- search mode (single 's'); keep s# for skip ---
+        # search mode (s)
         if x == "s":
             q = input("Enter search keywords (Enter=cancel, '!'=clear): ").strip()
             if q == "":
@@ -603,7 +600,7 @@ def pick_interactive(cands):
                 print(f"Search set: {q}")
             return None, None
 
-        # --- subscribe / unsubscribe ---
+        # subscribe / unsubscribe
         if x.startswith("subscribe"):
             parts = raw.split(maxsplit=1)
             token = parts[1].strip() if len(parts) > 1 else ""
@@ -629,7 +626,6 @@ def pick_interactive(cands):
             if len(parts) >= 3:
                 _ab_active = True
                 name = " ".join(parts[2:])
-                # strip non-printable / esc-sequences
                 name = "".join(ch for ch in name if ch.isprintable()).strip()
                 import re as _re
                 name = _re.sub(r"\s+", " ", name)
@@ -708,7 +704,6 @@ def pick_interactive(cands):
                 else:
                     print("Could not determine channel id for that video."); continue
 
-        # Explainability
         if x.startswith("why "):
             num = x.split()[-1]
             if num.isdigit():
@@ -791,7 +786,6 @@ def _effective_caps(k):
     return CHANNEL_CAP, BRAND_CAP, SESSION_CHANNEL_CAP
 
 
-# --- Light, automatic refresh when DB is small (every 3rd page) ---
 def _light_refresh_if_small():
     if API_FAST:
         return
@@ -830,45 +824,42 @@ def _light_refresh_if_small():
     except Exception:
         pass
 
-# ------------- Core recommendation -------------
+# Core recommendation
 def recommend(k=20):
     _light_refresh_if_small()  # occasionally expand pool when DB is small
     global _session_pages, _ab_page_map, _last_contrib
 
-    # --- Search seeding (channel-first; then smart; then keywords) ---
+    # Search seeding (channel-first; then smart; then keywords)
     seed_ids = set()
     seed_pool = []
     if globals().get("_search_query"):
         qtxt = (_search_query or "").strip()
 
-        # one-page-only block (what you already had)
         exclude_once = set(globals().get("_search_nextpage_block") or set())
         globals()["_search_nextpage_block"] = set()
 
-        # (1) channel uploads – only if not fast mode (network)
+        # (1) channel uploads
         if not API_FAST:
             seed_pool = _seed_from_channel_query(qtxt)
 
-        # (2) smart search – only if not fast mode (network)
+        # (2) smart search
         if not seed_pool and not API_FAST:
             try:
                 seed_pool = youtube.search_smart(qtxt, max_results=FALLBACK_FETCH_TOTAL)
             except Exception:
                 seed_pool = []
 
-        # (3) keyword search – only if not fast mode (network)
+        # (3) keyword search
         if not seed_pool and not API_FAST:
             try:
                 seed_pool = youtube.search_by_keywords(qtxt, max_results=FALLBACK_FETCH_TOTAL)
             except Exception:
                 seed_pool = []
 
-        # (4) NEW: local cache fallback (works in fast mode)
         if not seed_pool:
             seed_pool = _seed_from_local_cache(qtxt, max_results=FALLBACK_FETCH_TOTAL)
 
         if seed_pool:
-            # safe even for local videos; upsert is a no-op for existing
             store.upsert_videos(seed_pool)
             seed_ids = {v.get("id") for v in seed_pool if v.get("id")}
 
@@ -876,7 +867,6 @@ def recommend(k=20):
             store.log_session_event("search_seed", q=qtxt, n=len(seed_ids))
         except Exception:
             pass
-
 
     all_videos = store.fetch_all_videos()
     if not all_videos:
@@ -906,31 +896,29 @@ def recommend(k=20):
     last = hist[0][0] if hist else None
     user_vec = recommender.make_user_profile(model, all_videos, hist) if hist else None
 
-    # -------- EXCLUDES / COOLDOWN (RELAXED IN SEARCH) --------
     session_exclude = set().union(*_session_pages) if _session_pages else set()
-    if globals().get("_search_query"):                         # <--- NEW: 3c
-        session_exclude = set()                                # do not exclude prior page items in search
+    if globals().get("_search_query"):
+        session_exclude = set()
 
     recently_shown = set()
     try:
         recently_shown = store.get_recently_impressed_ids(IMPRESSION_TTL_HOURS, 1)
     except Exception:
         recently_shown = set()
-    if globals().get("_search_query"):                         # <--- NEW: 3c
-        recently_shown = set()                                 # drop cooldown in search
+    if globals().get("_search_query"):
+        recently_shown = set()
 
     full_exclude = set(watched_ids) | set(session_exclude) | recently_shown
 
-    # === Search-first path (long-form only) ===
+    # Search-first path (long-form only)
     if seed_ids:
         id_to_video = {v["id"]: v for v in store.fetch_all_videos()}
 
-        # Build from seeded ids; ignore session/cooldown; respect one-page block
         def _is_longform(v):
             return int(v.get("duration_sec") or 0) >= MIN_LONG_SEC and not looks_short_title(v.get("title"))
 
         try:
-            exclude_once  # defined above
+            exclude_once
         except NameError:
             exclude_once = set()
 
@@ -966,10 +954,9 @@ def recommend(k=20):
                 out.append(v); ch_counts[ch] += 1; brand_counts[bk] += 1
                 if len(out) >= k: break
 
-            # Remember: hide these only on the very next page, not forever
             globals()["_search_nextpage_block"] = {v["id"] for v in out}
 
-            # IMPORTANT: no _session_pages append and no log_impressions in search   <--- NEW: 3a
+            # no _session_pages append and no log_impressions in search
 
             try:
                 store.log_session_event(
@@ -983,11 +970,11 @@ def recommend(k=20):
 
             return out[:k]
 
-    # If in SEARCH mode but we failed to seed anything, return empty (no general fallback).   <--- NEW: 3b
+    # If in SEARCH mode but we failed to seed anything, return empty (no general fallback).
     if globals().get("_search_query") and not seed_ids:
         return []
 
-    # --- Trending-only path ---
+    # Trending-only path
     if _trending_only:
         try:
             if TRENDING_FETCH and not API_FAST:
@@ -1010,13 +997,12 @@ def recommend(k=20):
                   or (v.get("channel_title") or "").strip().lower())
             bk = brand_key(v)
             if _session_channel_counts[ch] >= local_session_cap: continue
-            if ch_counts[ch] >= local_ch_cap:                    continue
-            if brand_counts[bk] >= local_brand_cap:              continue
+            if ch_counts[ch] >= local_ch_cap: continue
+            if brand_counts[bk] >= local_brand_cap: continue
             out.append(v); ch_counts[ch] += 1; brand_counts[bk] += 1
             _session_channel_counts[ch] += 1
             if len(out) >= k: break
 
-        # NN re-rank (trending path)
         buffer = list(out)
         if USE_NN and nn_predict and buffer:
             ids = [b["id"] if "id" in b else b.get("video_id") for b in buffer]
@@ -1044,7 +1030,6 @@ def recommend(k=20):
             pass
         return out[:k]
 
-    # ------- Personalized w/ Phase-3 hooks -------
     session_recent = _session_topic_freqs()
     session_topics = _session_topic_freqs()
 
@@ -1086,16 +1071,16 @@ def recommend(k=20):
             def _take(owner, ids, idx):
                 while idx < len(ids):
                     vid = ids[idx]; idx += 1
-                    if vid in seen_ids or vid in session_exclude:      continue
+                    if vid in seen_ids or vid in session_exclude: continue
                     v = id_to_video.get(vid)
-                    if not v:                                          continue
+                    if not v: continue
                     if not is_longform(v) or not is_allowed_channel(v): continue
                     ch = ((v.get("channel_id") or "").strip()
                           or (v.get("channel_title") or "").strip().lower())
                     bk = brand_key(v)
                     if _session_channel_counts[ch] >= local_session_cap: continue
-                    if ch_counts[ch] >= local_ch_cap:                     continue
-                    if brand_counts[bk] >= local_brand_cap:               continue
+                    if ch_counts[ch] >= local_ch_cap: continue
+                    if brand_counts[bk] >= local_brand_cap: continue
 
                     vv = dict(v); vv["ab_variant"] = owner
                     out.append(vv); seen_ids.add(vid)
@@ -1144,7 +1129,6 @@ def recommend(k=20):
         id_to_video = {v["id"]: v for v in all_videos}
         out, ch_counts, brand_counts = [], defaultdict(int), defaultdict(int)
 
-        # "ignored" penalty
         try:
             vid_list = [vid for vid, _ in ranked[:k*3]]
             counts = store.get_impression_like_counts(vid_list)
@@ -1160,7 +1144,6 @@ def recommend(k=20):
         balanced_ids = _round_robin_by_channel(ranked, id_to_video, local_ch_cap, k*2)
         ranked = [(vid, 0.0) for vid in balanced_ids]
 
-        # In search mode, keep only seeded items
         if seed_ids:
             ranked = [(vid, s) for (vid, s) in ranked if vid in seed_ids]
 
@@ -1170,9 +1153,9 @@ def recommend(k=20):
             if not v or not is_longform(v) or not is_allowed_channel(v): continue
             ch = ((v.get("channel_id") or "").strip() or (v.get("channel_title") or "").strip().lower())
             bk = brand_key(v)
-            if _session_channel_counts[ch] >= local_session_cap:   continue
-            if ch_counts[ch] >= local_ch_cap:                      continue
-            if brand_counts[bk] >= local_brand_cap:                continue
+            if _session_channel_counts[ch] >= local_session_cap: continue
+            if ch_counts[ch] >= local_ch_cap: continue
+            if brand_counts[bk] >= local_brand_cap: continue
             out.append(v); ch_counts[ch]+=1; brand_counts[bk]+=1
             _session_channel_counts[ch] += 1
             if len(out) >= k: break
@@ -1180,7 +1163,6 @@ def recommend(k=20):
         _ab_page_map = {}
         _last_contrib = contrib
 
-    # Exploration slice
     USE_SUBS  = os.getenv("USE_SUBS", "0").lower() in {"1","true","yes","2"}
     if len(out) < k:
         target_explore = max(1, int(k * EXPLORATION_RATIO))
@@ -1203,14 +1185,13 @@ def recommend(k=20):
             if v["id"] in seen_ids: continue
             ch = ((v.get("channel_id") or "").strip() or (v.get("channel_title") or "").strip().lower())
             bk = brand_key(v)
-            if _session_channel_counts[ch] >= local_session_cap:   continue
-            if ch_counts[ch] >= local_ch_cap:                      continue
-            if brand_counts[bk] >= local_brand_cap:                continue
+            if _session_channel_counts[ch] >= local_session_cap: continue
+            if ch_counts[ch] >= local_ch_cap: continue
+            if brand_counts[bk] >= local_brand_cap: continue
             out.append(v); ch_counts[ch]+=1; brand_counts[bk]+=1; added += 1
             _session_channel_counts[ch] += 1
             if added >= target_explore or len(out) >= k: break
 
-    # Sub-first backfill
     if len(out) < k and USE_SUBS:
         subs_set = {s["channel_id"] for s in store.get_subscriptions()}
         sub_pool = [v for v in unwatched if (v.get("channel_id") or "") in subs_set and is_allowed_channel(v)]
@@ -1226,9 +1207,9 @@ def recommend(k=20):
             if not is_longform(v):   continue
             ch = ((v.get("channel_id") or "").strip() or (v.get("channel_title") or "").strip().lower())
             bk = brand_key(v)
-            if _session_channel_counts[ch] >= local_session_cap:   continue
-            if ch_counts[ch] >= local_ch_cap:                      continue
-            if brand_counts[bk] >= local_brand_cap:                continue
+            if _session_channel_counts[ch] >= local_session_cap: continue
+            if ch_counts[ch] >= local_ch_cap: continue
+            if brand_counts[bk] >= local_brand_cap: continue
             out.append(v); ch_counts[ch]+=1; brand_counts[bk]+=1
             _session_channel_counts[ch] += 1
             if len(out) >= k: break
@@ -1247,14 +1228,13 @@ def recommend(k=20):
             if not is_longform(v) or not is_allowed_channel(v): continue
             ch = ((v.get("channel_id") or "").strip() or (v.get("channel_title") or "").strip().lower())
             bk = brand_key(v)
-            if _session_channel_counts[ch] >= local_session_cap:   continue
-            if ch_counts[ch] >= local_ch_cap:                      continue
-            if brand_counts[bk] >= local_brand_cap:                continue
+            if _session_channel_counts[ch] >= local_session_cap: continue
+            if ch_counts[ch] >= local_ch_cap: continue
+            if brand_counts[bk] >= local_brand_cap: continue
             out.append(v); ch_counts[ch]+=1; brand_counts[bk]+=1
             _session_channel_counts[ch] += 1
             if len(out) >= k: break
 
-    # === NN RE-RANK (final page) ===
     buffer = list(out)
     if USE_NN and nn_predict and buffer:
         ids = [b["id"] if "id" in b else b.get("video_id") for b in buffer]
@@ -1282,7 +1262,7 @@ def recommend(k=20):
         pass
     return out[:k]
 
-# ------------- CLI & main -------------
+# CLI & main
 
 def _print_env_summary():
     key = os.getenv("YT_API_KEY", "")
@@ -1310,7 +1290,6 @@ def main():
     store.init_db()
     _print_env_summary()
 
-    # --- Phase 2.4/3 CLI utilities ---
     args = set(sys.argv[1:])
     dry = "--dry-run" in args
 
@@ -1410,7 +1389,7 @@ def main():
         print(f"  uploaded last 90d: {last90} ({(last90/max(1,n))*100:.1f}%)")
         return
 
-    # Start A/B by CLI flag: --ab=ExperimentName
+    # Start A/B by CLI flag
     for a in sys.argv[1:]:
         if a.startswith("--ab="):
             globals()["_ab_active"] = True
@@ -1426,7 +1405,7 @@ def main():
     # ensure DB has something to show
     ensure_seed()
 
-    BUFFER_K = 40  # pull a reasonably large page-set once
+    BUFFER_K = 40 # pull a reasonably large page-set once
     buffer = None
     offset = 0
 
@@ -1440,7 +1419,6 @@ def main():
 
         page = buffer[offset: offset + PAGE_SIZE]
         if not page:
-            # no more pages; fetch a fresh buffer
             buffer = None
             continue
 
@@ -1449,7 +1427,7 @@ def main():
             offset += PAGE_SIZE
             continue
         if pick is None:
-            # something changed (t/r/R/search/AB/etc.) → rebuild buffer
+            # something changed (t/r/R/search/AB/etc.) -> rebuild buffer
             buffer = None
             continue
 
@@ -1481,8 +1459,8 @@ def main():
         offset = 0
 
 
-# --- API wrappers (used by FastAPI) ---
-
+# API wrappers (used by FastAPI)
+        
 from typing import Optional, List, Dict
 
 _api_bootstrapped = False
@@ -1510,9 +1488,8 @@ def build_page(page: int, page_size: int, variant: str) -> list[dict]:
     Build a page of results using your real recommender.
     Must return dicts with keys: id, title, channel_title, duration_sec, why (list[str])
     """
-    # Pull a larger slice then window it to the requested page
     k = page * page_size * 2
-    items = recommend(k=k)  # your full logic
+    items = recommend(k=k)
     start = (page - 1) * page_size
     out = items[start:start + page_size]
     # Ensure 'why' is always present
@@ -1522,11 +1499,9 @@ def build_page(page: int, page_size: int, variant: str) -> list[dict]:
 
 
 def set_trending(on):
-    """True = trending-only page building; False = personalized."""
     globals()["_trending_only"] = bool(on)
 
 def set_category(category_id):
-    """Set active YouTube category id (or None to clear)."""
     globals()["_category_filter"] = category_id
 
 if __name__ == "__main__":

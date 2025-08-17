@@ -1,45 +1,59 @@
+"""
+ranker.py - Training and persistence logic for the recommendation ranker.
+
+- Defines feature vectorization and model persistence (save/load).
+- Provides prediction functions using linear models.
+- Implements full retraining and partial-fit updates from DB history.
+- Includes basic evaluation metrics (AUC, MAP@K).
+"""
+
 import os, json, time, pathlib
 import numpy as np
 
-MIN_TOTAL   = int(os.getenv("PF_MIN_TOTAL", "80"))
-MIN_POS     = int(os.getenv("PF_MIN_POS",   "5"))
-MIN_NEG     = int(os.getenv("PF_MIN_NEG",   "5"))
-WINDOW_K    = int(os.getenv("PF_WINDOW_K",  "200"))
+# Config thresholds from env (with defaults)
+MIN_TOTAL   = int(os.getenv("PF_MIN_TOTAL", "80")) # minimum samples per batch
+MIN_POS     = int(os.getenv("PF_MIN_POS",   "5")) # minimum positives required
+MIN_NEG     = int(os.getenv("PF_MIN_NEG",   "5")) # minimum negatives required
+WINDOW_K    = int(os.getenv("PF_WINDOW_K",  "200")) # sliding window size
 
 try:
     from sklearn.linear_model import SGDRegressor
     from sklearn.metrics import roc_auc_score
 except Exception:
-    # If sklearn not present, we'll no-op train; recommend installing scikit-learn
+    # Fallback if sklearn not installed
     SGDRegressor = None
     def roc_auc_score(y_true, y_score): return 0.5
 
+# File paths
 DATA_DIR = pathlib.Path(os.getenv("YT_REC_DATA_DIR", "data"))
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 MODEL_PATH = DATA_DIR / "ranker.pkl"
 
+# Feature schema
 FEATURE_FIELDS = ["sim_user","sim_last","pop","same_channel","dur_match","lang_match","hashtag_overlap","recency"]
 
+# Feature handling
 def vectorize_feature_row(fv: dict):
+    # Convert feature dict into numeric vector in fixed field order.
     return np.array([float(fv.get(k, 0.0)) for k in FEATURE_FIELDS], dtype=float)
 
-# -------- Persistence --------
+# Model persistence
 
 def save_model(model, path=None):
+    # Save model to disk (joblib if available, else numpy fallback).
     path = pathlib.Path(path or MODEL_PATH)
     try:
         import joblib
         joblib.dump(model, path)
     except Exception:
-        # simple np.save fallback
         arr = getattr(model, "coef_", np.zeros(len(FEATURE_FIELDS)))
         with open(path, "wb") as f:
             np.save(f, arr)
 
 def load_model(path=None):
+    # Load model from disk or return stub with zero weights.
     path = pathlib.Path(path or MODEL_PATH)
     if not path.exists():
-        # Return a stub with zero coefficients so recommender falls back to manual weights
         class Stub:
             coef_ = np.zeros(len(FEATURE_FIELDS))
             intercept_ = 0.0
@@ -48,7 +62,6 @@ def load_model(path=None):
         import joblib
         return joblib.load(path)
     except Exception:
-        # np.load fallback
         coef = np.load(path)
         class Simple:
             def __init__(self, coef):
@@ -58,17 +71,19 @@ def load_model(path=None):
                 return X.dot(self.coef_) + self.intercept_
         return Simple(coef)
 
+# Prediction
 def predict_scores(model, X: np.ndarray):
+    # Return prediction scores for feature matrix X.
     if hasattr(model, "predict"):
         return model.predict(X).ravel()
-    # fallback linear
     coef = getattr(model, "coef_", np.zeros(X.shape[1]))
     b = getattr(model, "intercept_", 0.0)
     return (X.dot(coef) + b).ravel()
 
-# -------- Training from DB (Phase 2.4) --------
+# Training helpers
 
 def _split_holdout(idx_list, holdout_frac=0.2, seed=42):
+    # Train/test split with random shuffle.
     rng = np.random.RandomState(seed)
     idx = np.arange(len(idx_list))
     rng.shuffle(idx)
@@ -78,7 +93,7 @@ def _split_holdout(idx_list, holdout_frac=0.2, seed=42):
     return [idx_list[i] for i in train_idx], [idx_list[i] for i in test_idx]
 
 def _map_at_k(y_true, scores, k=10):
-    # y_true is binary array; compute MAP@k on ranking by scores desc
+    # Compute MAP@K metric from binary labels and scores.
     order = np.argsort(-scores)
     rel = np.array(y_true)[order][:k]
     if rel.sum() == 0:
@@ -93,31 +108,26 @@ def _map_at_k(y_true, scores, k=10):
 
 def _build_training_matrix(model, all_videos, history_rows):
     """
-    Build (X, y) using current feature function.
-
-    Labels:
-      y = 1  -> not disliked (liked/positive)
-      y = 0  -> disliked
-    Skipped rows are ignored (unlabeled).
+    Build X, y from history:
+      - y=1: liked / not disliked
+      - y=0: disliked (plus sampled negatives)
     """
     from .recommender import _feature_row, _hist_prefs, make_user_profile
 
     id2v   = {v["id"]: v for v in all_videos}
     id2idx = {vid: i for i, vid in enumerate(model["ids"])}
 
-    # newest-first; keep only the first (latest) label per video; ignore skipped
     label_by_vid = {}
     for vid, ts, dwell, disliked, skipped in history_rows:
         if skipped:
-            continue  # ignore skipped in labels
+            continue
         if vid in label_by_vid:
-            continue  # already got the newest label
-        label_by_vid[vid] = 0 if int(disliked) else 1  # 1 == liked (not disliked)
+            continue
+        label_by_vid[vid] = 0 if int(disliked) else 1
 
     pos_ids = [vid for vid, lab in label_by_vid.items() if lab == 1]
     neg_ids = [vid for vid, lab in label_by_vid.items() if lab == 0]
 
-    # Add some random negatives from unwatched pool (helps stabilize)
     watched = set(label_by_vid.keys())
     pool = [v for v in all_videos if v["id"] not in watched]
     rng = np.random.RandomState(123)
@@ -126,22 +136,18 @@ def _build_training_matrix(model, all_videos, history_rows):
     )] if pool else []
     neg_ids.extend(extra_negs)
 
-    # History-derived prefs
     hist_lang_pref, hist_dur_pref, hist_hash = _hist_prefs(model, history_rows or [], id2v)
 
-    # Last video & user profile
     last_video = history_rows[0][0] if history_rows else None
     last_vec = model["X"][id2idx[last_video]] if last_video in id2idx else None
     user_vec = make_user_profile(model, all_videos, history_rows) if history_rows else None
 
     X_rows, y = [], []
-    # positives
     for vid in pos_ids:
         idx = id2idx.get(vid)
         if idx is None: continue
         fv = _feature_row(model, idx, user_vec, last_vec, hist_lang_pref, hist_dur_pref, hist_hash)
         X_rows.append(vectorize_feature_row(fv)); y.append(1)
-    # negatives
     for vid in neg_ids:
         idx = id2idx.get(vid)
         if idx is None: continue
@@ -152,10 +158,10 @@ def _build_training_matrix(model, all_videos, history_rows):
         return None, None
     return np.vstack(X_rows).astype(float), np.asarray(y, dtype=int)
 
+# Training entrypoints
+
 def retrain_from_db(save_path=None):
-    """
-    Full retrain from the current DB. Returns metrics dict.
-    """
+    # Full offline retrain using all history (with holdout eval).
     from . import store, recommender
     all_videos = store.fetch_all_videos()
     hist = store.get_history(n=5000)
@@ -167,7 +173,6 @@ def retrain_from_db(save_path=None):
     if X is None:
         return {"auc": 0.5, "map10": 0.0}
 
-    # holdout
     idx = list(range(len(y)))
     tr_idx, te_idx = _split_holdout(idx, holdout_frac=0.2)
     Xtr, ytr = X[tr_idx], y[tr_idx]
@@ -188,10 +193,7 @@ def retrain_from_db(save_path=None):
     return {"auc": auc, "map10": float(map10)}
 
 def partial_fit_from_db(save_path=None):
-    """
-    Online update: load existing model (or train small if missing),
-    then partial_fit on recent slice (sliding window).
-    """
+    # Online update with sliding window over recent history.
     from . import store, recommender
     all_videos = store.fetch_all_videos()
     hist = store.get_history(n=2000)
@@ -203,13 +205,11 @@ def partial_fit_from_db(save_path=None):
     if X is None:
         return {"auc": 0.5, "map10": 0.0}
 
-    # Sliding window over the most recent WINDOW_K labeled examples
     start = max(0, len(y) - WINDOW_K)
     if start > 0:
         X = X[start:]
         y = y[start:]
 
-    # Guards to avoid degenerate updates
     total = len(y)
     if total < MIN_TOTAL:
         print(f"[partial-fit] skipped: only {total} examples (<{MIN_TOTAL})")
@@ -223,7 +223,6 @@ def partial_fit_from_db(save_path=None):
 
     print(f"[partial-fit] batch total={total} pos={pos} neg={neg}")
 
-    # Load or init model
     m = load_model()
     if m is None or not hasattr(m, "partial_fit"):
         m = SGDRegressor(random_state=42, max_iter=200, tol=1e-3)
@@ -231,7 +230,6 @@ def partial_fit_from_db(save_path=None):
     else:
         m.partial_fit(X, y)
 
-    # Quick eval on tail
     tail = min(400, len(y))
     Xte, yte = X[-tail:], y[-tail:]
     scores = predict_scores(m, Xte)

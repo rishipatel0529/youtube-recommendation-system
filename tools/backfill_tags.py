@@ -1,9 +1,14 @@
-# tools/backfill_tags.py
+"""
+backfill_tags.py
+Backfill missing video tags in the database using YouTube API.
+"""
+
 from src import store, youtube
 from src.utils import load_env
 
 def main():
-    load_env()  # <-- add this
+    # Fetch and update missing tags for videos in bulk.
+    load_env()
     ids = store.list_ids_missing_tags(limit=1000)
     if not ids:
         print("No videos missing tags.")

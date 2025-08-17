@@ -1,16 +1,24 @@
+"""
+youtube.py
+YouTube Data API utilities:
+- Fetch video details, popular/trending, related, and channel uploads
+- Smart search (morphology, channel detection, dedupe)
+- Simple JSON cache with TTL for reducing API quota usage
+"""
+
 import os, requests, json, re, time, random, pathlib, difflib, itertools
 from typing import List, Dict
 
 BASE = "https://www.googleapis.com/youtube/v3/"
 
-# --- Long-form filter (configurable) ---
-MIN_LONG_SEC = int(os.getenv("LONG_MIN_SEC", "180"))  # e.g., 180/240/300
-
-# --- Simple disk cache for videos().list (by id) ---
+# Config & cache paths
+MIN_LONG_SEC = int(os.getenv("LONG_MIN_SEC", "180")) # minimum duration for "long-form" videos
 CACHE_TTL_HOURS = int(os.getenv("YT_CACHE_TTL_HOURS", "6"))
 DATA_DIR = pathlib.Path(os.getenv("YT_REC_DATA_DIR", "data"))
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 CACHE_PATH = DATA_DIR / "yt_video_cache.json"
+
+# Disk cache helpers
 
 def _load_cache():
     try:
@@ -27,6 +35,7 @@ def _save_cache(cache):
         pass
 
 def _cache_get(ids):
+    # Return (fresh_entries, stale_ids, full_cache).
     cache = _load_cache()
     now = time.time()
     fresh = {}
@@ -41,6 +50,7 @@ def _cache_get(ids):
     return fresh, remaining, cache
 
 def _cache_set(cache, items):
+    # Update cache with fresh items and save to disk.
     now = time.time()
     for it in items:
         vid = it.get("id")
@@ -49,7 +59,10 @@ def _cache_set(cache, items):
         cache[vid] = {"ts": now, "data": it}
     _save_cache(cache)
 
+# API request helper
+
 def _get(url, params, retries=3):
+    # GET request with retries/backoff; raises if exhausted.
     key = os.getenv("YT_API_KEY", "").strip()
     if not key:
         raise SystemExit("YT_API_KEY is empty. Set it in .env or the environment.")
@@ -60,7 +73,6 @@ def _get(url, params, retries=3):
         r = requests.get(BASE + url, params=p, timeout=20)
         if r.status_code < 400:
             return r.json()
-        # Retry on 429 or 5xx
         if r.status_code in (429, 500, 502, 503, 504):
             time.sleep(backoff + random.uniform(0, 0.5))
             backoff = min(backoff * 2, 8.0)
@@ -73,10 +85,12 @@ def _get(url, params, retries=3):
             f"{r.status_code} {r.reason} on {url} with params {p} :: {json.dumps(err)[:600]}",
             response=r
         )
-    # final attempt failed
     r.raise_for_status()
 
+# Utilities
+
 def iso8601_duration_to_seconds(s):
+    # Convert ISO-8601 duration (e.g. PT5M30S) -> seconds.
     if not s:
         return 0
     s = s.upper()
@@ -93,7 +107,10 @@ def iso8601_duration_to_seconds(s):
             sec = int(num or 0); num = ""
     return h*3600 + m*60 + sec
 
+# Basic video fetches
+
 def most_popular(max_results=50):
+    # Fetch region's trending/most popular videos.
     region = os.getenv("REGION", "US")
     data = _get("videos", {
         "chart": "mostPopular",
@@ -103,10 +120,8 @@ def most_popular(max_results=50):
     })
     return parse_videos(data)
 
-# ---------- Helpers exposed for main.py to build mixed fallbacks ----------
-
 def video_snippet(video_id):
-    """Return (snippet dict, duration_seconds)."""
+    # Return (snippet dict, duration_seconds) for one video.
     det = _get("videos", {"id": video_id, "part": "snippet,contentDetails"})
     items = det.get("items", [])
     if not items:
@@ -117,6 +132,7 @@ def video_snippet(video_id):
     return sn, dur
 
 def keyword_query_from_snippet(sn):
+    # Build lightweight keyword query from a snippet's title/tags.
     title = sn.get("title", "") or ""
     tags = sn.get("tags", []) or []
     words = re.findall(r"[A-Za-z0-9]{3,}", title.lower())
@@ -126,6 +142,7 @@ def keyword_query_from_snippet(sn):
     return " ".join(kws)
 
 def search_by_keywords(q, max_results=25, relevance_language="en"):
+    # Search YouTube by free-text query.
     srch = _get("search", {
         "part": "snippet",
         "type": "video",
@@ -137,6 +154,7 @@ def search_by_keywords(q, max_results=25, relevance_language="en"):
     return video_details(ids)
 
 def channel_uploads_videos(channel_id, max_results=25):
+    # Fetch recent uploads for a channel.
     ch = _get("channels", {"id": channel_id, "part": "contentDetails"})
     items = ch.get("items", [])
     if not items:
@@ -154,14 +172,13 @@ def channel_uploads_videos(channel_id, max_results=25):
     return video_details(ids)
 
 def video_details(ids):
+    # Hydrate video IDs into full details (uses cache).
     if not ids:
         return []
-    # cache first
     fresh, remaining, cache = _cache_get(ids)
     out = []
     if fresh:
         out.extend(_items_to_normalized(list(fresh.values())))
-    # hydrate the rest in batches of 50
     for j in range(0, len(remaining), 50):
         chunk = remaining[j:j+50]
         det = _get("videos", {"id": ",".join(chunk), "part": "snippet,statistics,contentDetails"})
@@ -171,6 +188,7 @@ def video_details(ids):
     return out
 
 def related(video_id, max_results=25):
+    # Fetch videos related to a given video ID.
     try:
         data = _get("search", {"part": "snippet", "type": "video", "relatedToVideoId": video_id, "maxResults": min(max_results, 50)})
         ids = [i["id"]["videoId"] for i in data.get("items", []) if i.get("id", {}).get("videoId")]
@@ -180,18 +198,18 @@ def related(video_id, max_results=25):
         return []
     return []
 
-# ---------- SMART SEARCH (morphology + channel detection + dedupe) ----------
-
-# light morphological expansion: common English suffix variants
+# Smart search (morphology + channel detection)
 _SUFFIXES = ["", "s", "es", "er", "ers", "or", "ors", "ed", "ing", "ion", "ions", "ial", "al"]
 
 def _stemish(token: str) -> str:
+    # Crude stemming: strip common suffixes if length >= 3.
     for suf in ["ing", "ions", "ion", "ers", "er", "ors", "or", "es", "s", "ed", "al", "ial"]:
         if token.endswith(suf) and len(token) - len(suf) >= 3:
             return token[: -len(suf)]
     return token
 
 def _expand_query_terms(q: str, max_variants: int = 6) -> List[str]:
+    # Expand query into morphological variants (for recall).
     tokens = re.findall(r"[A-Za-z0-9']+", (q or "").lower())
     if not tokens:
         return [q]
@@ -219,7 +237,7 @@ def _expand_query_terms(q: str, max_variants: int = 6) -> List[str]:
     return deduped
 
 def search_channels_basic(q: str, max_results: int = 20) -> List[Dict]:
-    """Lightweight channel search (title + id)."""
+    # Lightweight channel search (id + title only).
     data = _get("search", {
         "part": "snippet",
         "type": "channel",
@@ -236,6 +254,7 @@ def search_channels_basic(q: str, max_results: int = 20) -> List[Dict]:
 
 
 def _best_channel_hits(query: str, candidates: List[Dict], topk: int = 3, min_ratio: float = 0.60) -> List[Dict]:
+    # Pick closest channel name matches to query (fuzzy).
     scored = []
     ql = (query or "").lower().strip()
     for c in candidates:
@@ -249,7 +268,7 @@ def _best_channel_hits(query: str, candidates: List[Dict], topk: int = 3, min_ra
 
 
 def _uploads_video_ids(channel_id: str, max_results: int = 50) -> List[str]:
-    """Fetch recent upload video IDs for a channel without hydrating details (quota-light)."""
+    # Fetch recent upload IDs for a channel (quota-light).
     ch = _get("channels", {"id": channel_id, "part": "contentDetails"})
     items = ch.get("items", [])
     if not items:
@@ -266,18 +285,12 @@ def _uploads_video_ids(channel_id: str, max_results: int = 50) -> List[str]:
     return [i for i in ids if i]
 
 def search_smart(query: str, max_results: int = 60) -> List[Dict]:
-    """
-    1) expand the query morphologically and run several small video searches
-    2) detect likely channel names and fetch their recent uploads
-    3) merge video IDs, de-duplicate, then hydrate via videos().list
-    4) if everything filters out (e.g., all Shorts), fall back to a plain keyword search
-    """
+    # Smart search: expands query, detects channels, dedupes IDs, hydrates.
     if not query:
         return []
 
     ids: List[str] = []
-
-    # (1) morphological variants (no language restriction)
+    # (1) morphological variants
     variants = _expand_query_terms(query, max_variants=6)
     per = max(5, max_results // max(1, len(variants)))
     for v in variants:
@@ -287,12 +300,11 @@ def search_smart(query: str, max_results: int = 60) -> List[Dict]:
                 "type": "video",
                 "q": v,
                 "maxResults": min(per, 50)
-                # intentionally omit "relevanceLanguage"
             })
             ids.extend([i["id"]["videoId"] for i in srch.get("items", []) if i.get("id", {}).get("videoId")])
         except Exception:
             pass
-
+    
     # (2) channel flow
     try:
         ch_raw = search_channels_basic(query, max_results=20)
@@ -306,7 +318,7 @@ def search_smart(query: str, max_results: int = 60) -> List[Dict]:
     except Exception:
         pass
 
-    # (3) de-dup IDs, hydrate (parse_videos will enforce long-form)
+    # (3) dedup + hydrate
     seen = set(); uniq = []
     for vid in ids:
         if vid and vid not in seen:
@@ -314,7 +326,7 @@ def search_smart(query: str, max_results: int = 60) -> List[Dict]:
 
     out = video_details(uniq)
 
-    # (4) if everything filtered out → fallback to a direct keyword search
+    # (4) fallback
     if not out:
         try:
             out = search_by_keywords(query, max_results=max_results)
@@ -323,13 +335,14 @@ def search_smart(query: str, max_results: int = 60) -> List[Dict]:
 
     return out
 
-# ---------- parsing ----------
-
+# Parsing helpers
 def _items_to_normalized(items):
+    # Wrap list of items into parse_videos().
     data = {"items": items}
     return parse_videos(data)
 
 def parse_videos(data):
+    # Normalize API items into flat dicts, filtering out Shorts.
     out = []
     for it in data.get("items", []):
         vid = it.get("id")
@@ -341,7 +354,7 @@ def parse_videos(data):
         dur = iso8601_duration_to_seconds(cd.get("duration"))
         tags = sn.get("tags") or []
 
-        # stricter long-form filter
+        # filter: long-form only, exclude Shorts
         if dur and dur < MIN_LONG_SEC:
             continue
 

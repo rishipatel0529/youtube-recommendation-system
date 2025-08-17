@@ -1,7 +1,14 @@
+"""
+app.py
+Streamlit front-end for the YouTube Recommender API.
+Provides YouTube-style UI with search, recommendations,
+subscriptions, feedback (watch/like/skip), and A/B report display.
+"""
+
 import streamlit as st, requests, os
 from html import escape
 
-# --- API base ---
+# API base URL (from Streamlit secrets or env)
 try:
     API = st.secrets["API_URL"]
 except Exception:
@@ -9,8 +16,7 @@ except Exception:
 
 st.set_page_config(page_title="YT Recs", layout="wide")
 
-
-# --- YouTube-like typography (font + sizes) ---
+# Global CSS: YouTube-like typography & layout tweaks
 st.markdown("""
 <style>
   /* Load Roboto like YouTube */
@@ -120,30 +126,31 @@ html, body, [data-testid="stAppViewContainer"], .stMarkdown, .stText,
 </style>
 """, unsafe_allow_html=True)
 
-
-
-# --- session state ---
+# Session state initialization
 if "variant" not in st.session_state: st.session_state.variant = "A"
 if "page" not in st.session_state: st.session_state.page = 1
 if "trending" not in st.session_state: st.session_state.trending = False
 if "subs_set" not in st.session_state: st.session_state.subs_set = set()
 if "category_id" not in st.session_state: st.session_state.category_id = None
-# caching + per-card state
 if "items_cache" not in st.session_state: st.session_state.items_cache = None
 if "items_cache_key" not in st.session_state: st.session_state.items_cache_key = None
 if "needs_reload" not in st.session_state: st.session_state.needs_reload = True
-if "pending_feedback" not in st.session_state: st.session_state.pending_feedback = {}  # {video_id: True}
+if "pending_feedback" not in st.session_state: st.session_state.pending_feedback = {}
 
-# --- helpers ---
+# API helpers
+
 def api_get(path, **params):
+    # GET request to backend API with query params.
     r = requests.get(f"{API}{path}", params=params, timeout=30); r.raise_for_status()
     return r.json()
 
 def api_post(path, payload):
+    # POST request to backend API with JSON body.
     r = requests.post(f"{API}{path}", json=payload, timeout=60); r.raise_for_status()
     return r.json()
 
 def load_subs_set():
+    # Populate session.subs_set with subscribed channel IDs.
     try:
         resp = api_get("/subs")
         st.session_state.subs_set = {x["channel_id"] for x in resp.get("items", [])}
@@ -151,6 +158,7 @@ def load_subs_set():
         st.session_state.subs_set = set()
 
 def load_categories():
+    # Fetch list of categories from backend.
     try:
         resp = api_get("/categories")
         return resp.get("items", [])
@@ -158,7 +166,7 @@ def load_categories():
         return []
 
 def fmt_duration(sec):
-    """Return m:ss (or h:mm:ss if >= 1 hour) from seconds."""
+    # Format seconds into m:ss or h:mm:ss.
     try:
         total = int(sec or 0)
     except Exception:
@@ -168,28 +176,28 @@ def fmt_duration(sec):
     return f"{h}:{m:02d}:{s:02d}" if h else f"{m}:{s:02d}"
 
 def trunc_channel(name: str, hard_max: int = 39, keep: int = 36) -> str:
-    """Hard truncate channel names: if len>hard_max, keep first `keep` and add '...'."""
+    # Truncate long channel names with ellipsis if > hard_max.
     s = (name or "").strip()
     return (s[:keep].rstrip() + "...") if len(s) > hard_max else s
 
 
 def fetch_items(mode, q, page, page_size):
+    # Fetch recommend/search items depending on mode and query.
     q = (q or "").strip()
-    if q:  # if user typed anything, run search
+    if q:
         return api_post("/search", {"q": q, "page": page, "page_size": page_size})
     else:
         return api_post("/recommend", {"user_id":"local","page": page,"page_size": page_size,"variant": st.session_state.variant})
 
-# --- pre-widget triggers (must run before widgets are created) ---
+# Pre-widget triggers (clear query)
 if st.session_state.get("_clear_q_trigger"):
     st.session_state.pop("q", None)
     st.session_state["_clear_q_trigger"] = False
 
-# ---------- Sidebar ----------
+# Sidebar controls (variant, mode, query, refresh, trending, categories, pager)
 with st.sidebar:
     st.title("Controls")
 
-    # Variant selector
     sel_variant = st.selectbox("Variant", ["A", "B"], index=0 if st.session_state.variant == "A" else 1)
     if sel_variant != st.session_state.variant:
         st.session_state.variant = sel_variant
@@ -197,7 +205,6 @@ with st.sidebar:
 
     mode = st.radio("Mode", ["Recommend", "Search"], index=0, horizontal=True)
 
-    # Query + compact clear (aligned ✕)
     st.markdown("**Query**")
     qcol, clrcol = st.columns([8, 1])
     with qcol:
@@ -209,7 +216,6 @@ with st.sidebar:
             label_visibility="collapsed",
         )
     with clrcol:
-        # no spacer -> aligns with the input vertically
         if st.button("✕", key="clear_q", help="Clear query", use_container_width=True):
             st.session_state["_clear_q_trigger"] = True
             st.session_state.needs_reload = True
@@ -217,7 +223,6 @@ with st.sidebar:
 
     page_size = st.slider("Page size", 5, 20, 10)
 
-    # Refresh button
     if st.button("Refresh"):
         try:
             api_post("/control/refresh", {})
@@ -226,7 +231,6 @@ with st.sidebar:
         st.session_state.needs_reload = True
         st.rerun()
 
-    # Trending only — circle style via radio
     trend_choice = st.radio(
         "Trending only",
         ["On", "Off"],
@@ -244,7 +248,6 @@ with st.sidebar:
         st.session_state.needs_reload = True
         st.rerun()
 
-    # Category section
     st.markdown("### Category")
     cats = load_categories()
     names = ["All"] + [f"{c['name']} ({c['id'] or '—'})" for c in cats]
@@ -259,7 +262,6 @@ with st.sidebar:
             pass
         st.session_state.needs_reload = True
 
-    # Pager
     c1, c2 = st.columns(2)
     if c1.button("Prev"):
         st.session_state.page = max(1, st.session_state.page - 1)
@@ -269,13 +271,12 @@ with st.sidebar:
         st.session_state.needs_reload = True
     st.caption(f"Page {st.session_state.page}")
 
-# subs list (id set used by buttons)
+# Subscriptions (ensure subs_set is loaded)
 load_subs_set()
 
-# --- read query from session ---
+# Cache key and conditional fetch
 q = st.session_state.get("q", "")
 
-# --- page cache key + conditional fetch ---
 cache_key = (
     st.session_state.variant,
     mode,
@@ -294,7 +295,7 @@ if st.session_state.needs_reload or cache_key != st.session_state.items_cache_ke
 else:
     items = st.session_state.items_cache or []
 
-# --- render items (stable after Watch) ---
+# Main grid of video cards
 cols = st.columns(3)
 for i, it in enumerate(items):
     c = cols[i % 3]
@@ -307,7 +308,6 @@ for i, it in enumerate(items):
         rank = it.get("rank")
         variant = it.get("variant", st.session_state.variant)
 
-        # Clickable thumbnail that opens YouTube in a new tab
         if vid:
             thumb_base = f"https://i.ytimg.com/vi/{vid}"
             thumb_url  = f"{thumb_base}/mqdefault.jpg"
@@ -326,7 +326,7 @@ for i, it in enumerate(items):
 
         st.markdown(f'<div class="yt-title">{escape(title)}</div>', unsafe_allow_html=True)
 
-        ch_display = trunc_channel(channel_name)  # hard-limit the channel name
+        ch_display = trunc_channel(channel_name)
 
         meta_html = f'''
         <div class="yt-meta">
@@ -336,7 +336,6 @@ for i, it in enumerate(items):
         '''
         st.markdown(meta_html, unsafe_allow_html=True)
 
-        # Subscribe / Unsubscribe
         sc1, _ = st.columns(2)
         if ch_id:
             if ch_id in st.session_state.subs_set:
@@ -352,7 +351,6 @@ for i, it in enumerate(items):
         else:
             sc1.button("Subscribe", key=f"sub_disabled_{i}", disabled=True)
 
-        # Watch -> Like/Dislike
         watched = st.session_state.pending_feedback.get(vid, False)
         if not watched:
             b1, b2 = st.columns(2)
@@ -402,7 +400,6 @@ for i, it in enumerate(items):
                 st.session_state.needs_reload = True
                 st.rerun()
 
-        # '...' menu (reordered: Save video → Save channel → Block channel)
         with st.expander("⋯", expanded=False):
             m1, m2, m3 = st.columns(3)
             if m1.button("Save video", key=f"favv_{vid}"):
@@ -424,7 +421,7 @@ for i, it in enumerate(items):
         if it.get("why"):
             st.caption("Why: " + ", ".join(it["why"]))
 
-# --- AB report ---
+# AB report section
 st.divider()
 st.subheader("A/B Report")
 since = st.text_input("Since (YYYY-MM-DD)", value="2025-01-01")

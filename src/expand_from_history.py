@@ -1,31 +1,41 @@
-# src/expand_from_history.py
+"""
+expand_from_history.py — Grow the local video cache using your recent watch history.
+
+Flow:
+1) Read recent history from DB and CSV, merge & dedupe (most-recent first).
+2) Ensure details exist for those videos; fetch any missing from the API.
+3) Expand candidates via:
+   - Top channels uploads
+   - Related videos for recent watches
+   - Keyword searches derived from recent titles
+4) Upsert all results into the local store and report growth.
+"""
+
 import re
 from collections import Counter, deque
 from pathlib import Path
 from .utils import load_env
-
 from . import store, youtube
 
-# How many recent items to consider from history (DB ∪ CSV)
+# Tunables
 HIST_WINDOW = 400
-# How many to pull per source
 PER_CHANNEL   = 15
 PER_RELATED   = 15
 PER_KEYWORDS  = 15
 
 def _kw_from_title(t, k=6):
+    # Extract up to k simple alphanumeric keywords from a title.
     words = re.findall(r"[A-Za-z0-9]{3,}", (t or "").lower())
     return " ".join(words[:k]) if words else ""
 
 def _read_csv_history(max_rows=2000):
-    """Return list of (video_id, ts) most-recent-first from CSV."""
+    # Return [(video_id, ts)] newest-first from CSV history (if present).
     p = Path(store.history_csv_path())
     out = []
     if not p.exists():
         return out
     with p.open("r", encoding="utf-8") as f:
-        # skip header
-        next(f, None)
+        next(f, None) # skip header
         for line in f:
             # ts,video_id,title,channel_title,dwell_sec,disliked,skipped
             parts = line.rstrip("\n").split(",", 3)
@@ -38,19 +48,18 @@ def _read_csv_history(max_rows=2000):
             except Exception:
                 continue
             out.append((vid, ts))
-    # CSV is chronological append, so last lines are newest; reverse to newest-first
     out.sort(key=lambda x: x[1], reverse=True)
     return out[:max_rows]
 
 def _read_db_history(max_rows=2000):
-    """Return list of (video_id, ts) most-recent-first from DB."""
-    rows = store.get_history(n=max_rows)  # [(video_id, ts, dwell, disliked, skipped)]
+    # Return [(video_id, ts)] newest-first from DB history.
+    rows = store.get_history(n=max_rows) # [(video_id, ts, dwell, disliked, skipped)]
     out = [(vid, ts) for (vid, ts, *_rest) in rows]
-    # get_history is DESC already, but let’s be safe
     out.sort(key=lambda x: x[1], reverse=True)
     return out
 
 def _dedup_preserve_order(pairs):
+    # Deduplicate by video_id while preserving newest-first order.
     seen = set()
     deduped = []
     for vid, ts in pairs:
@@ -61,15 +70,16 @@ def _dedup_preserve_order(pairs):
     return deduped
 
 def run():
+    # Entry point: expand local cache from history via channels/related/keywords.
     load_env()
     store.init_db()
 
-    # --- before stats
+    # before stats
     all_before = store.fetch_all_videos()
     all_ids_before = {v["id"] for v in all_before}
     print(f"[expand] before: videos in cache = {len(all_before)}")
 
-    # 1) Build a recent history window from DB ∪ CSV
+    # Build recent history window (DB ∪ CSV)
     db_hist  = _read_db_history(max_rows=2000)
     csv_hist = _read_csv_history(max_rows=2000)
     combined = _dedup_preserve_order(sorted(db_hist + csv_hist, key=lambda x: x[1], reverse=True))
@@ -78,22 +88,22 @@ def run():
         return
     recent = combined[:HIST_WINDOW]
 
-    # 2) Make sure the videos table has details for these history IDs
+    # Ensure details exist for recent history IDs
     missing = [vid for (vid, _ts) in recent if vid not in all_ids_before]
     if missing:
         print(f"[expand] fetching details for {len(missing)} recent history IDs not in cache...")
-        for i in range(0, len(missing), 50):
+        for i in range(0, len(missing), 50): # batch YouTube API calls
             chunk = missing[i:i+50]
             try:
-                items = youtube.video_details(chunk)  # long-form filtering happens inside
+                items = youtube.video_details(chunk) # long-form filtering inside
                 store.upsert_videos(items)
             except Exception as e:
                 print("[expand] details chunk failed:", e)
 
-    # Refresh after upserts
+    # Refresh cache snapshot after upserts
     vids_map = {v["id"]: v for v in store.fetch_all_videos()}
 
-    # Extract top channels from the *enriched* recent history
+    # Extract top channels, recent titles, and related seeds from enriched history
     ch_counts = Counter()
     titles_q  = deque()
     rel_seeds = deque()
@@ -110,7 +120,7 @@ def run():
     top_channels = [ch for ch,_ in ch_counts.most_common(12)]
     print(f"[expand] top channels from history: {len(top_channels)}")
 
-    # 3) Expand: channel uploads
+    # Expand: channel uploads
     upserted = 0
     for ch in top_channels:
         try:
@@ -120,7 +130,7 @@ def run():
         except Exception as e:
             print("[expand] channel uploads failed:", e)
 
-    # 4) Expand: related videos for last N history watches (dedup by order)
+    # Expand: related videos for last N history watches
     for vid in list(rel_seeds)[:60]:
         try:
             items = youtube.related(vid, max_results=PER_RELATED)
@@ -129,7 +139,7 @@ def run():
         except Exception as e:
             print("[expand] related failed:", e)
 
-    # 5) Expand: keyword search from recent titles
+    # Expand: keyword searches derived from recent titles
     seen_q = set()
     for t in list(titles_q)[:80]:
         q = _kw_from_title(t)
@@ -143,7 +153,7 @@ def run():
         except Exception as e:
             print("[expand] keyword search failed:", e)
 
-    # --- after stats
+    # after stats
     all_after = store.fetch_all_videos()
     print(f"[expand] after: videos in cache = {len(all_after)}  (+{len(all_after) - len(all_before)})")
     print(f"[expand] upserted candidates (raw count across calls) ~ {upserted}")

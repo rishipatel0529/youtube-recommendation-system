@@ -1,4 +1,13 @@
-# src/import_takeout.py
+"""
+import_takeout.py — Import YouTube watch history from Google Takeout.
+
+Purpose:
+- Parse Takeout JSON watch-history exports.
+- Extract video IDs and timestamps.
+- Filter for long-form videos (skip Shorts).
+- Fetch metadata via YouTube API and insert into DB/CSV.
+"""
+
 import os, sys, json, time
 from pathlib import Path
 from urllib.parse import urlparse, parse_qs
@@ -7,16 +16,15 @@ from time import sleep
 from .utils import load_env
 from . import store, youtube
 
-# target number of long-form watches to import (most recent)
-MAX_IMPORT = int(os.getenv("MAX_IMPORT", "300"))
-# how many history rows to scan from the end of the JSON (bigger -> more API calls)
-SCAN_WINDOW = int(os.getenv("SCAN_WINDOW", "5000"))
-# minimum duration for "long-form" (seconds)
-MIN_DURATION_SEC = int(os.getenv("LONG_MIN_SEC", "180"))
+# Configurable limits
+MAX_IMPORT = int(os.getenv("MAX_IMPORT", "300")) # target long-form imports
+SCAN_WINDOW = int(os.getenv("SCAN_WINDOW", "5000")) # rows to scan from end of file
+MIN_DURATION_SEC = int(os.getenv("LONG_MIN_SEC", "180")) # long-form threshold
 
 YOUTUBE_DOMAINS = ("youtube.com", "m.youtube.com", "www.youtube.com", "youtu.be")
 
 def _extract_video_id(url: str):
+    # Extract video ID from a YouTube URL (handles youtu.be and /watch).
     if not url:
         return None
     try:
@@ -28,12 +36,12 @@ def _extract_video_id(url: str):
             return vid or None
         if u.path == "/watch":
             return parse_qs(u.query).get("v", [None])[0]
-        # we intentionally ignore other paths; details filter will handle long-form anyway
-        return None
+        return None # ignore other paths
     except Exception:
         return None
 
 def _load_takeout_json(path: Path):
+    # Load and normalize watch-history.json into [(timestamp, video_id)].
     data = json.loads(path.read_text(encoding="utf-8"))
     rows = []
     for it in data:
@@ -48,14 +56,16 @@ def _load_takeout_json(path: Path):
         except Exception:
             ts = int(time.time())
         rows.append((ts, vid))
-    rows.sort()  # oldest -> newest
+    rows.sort()
     return rows
 
 def _chunk(lst, n):
+    # Yield list chunks of size n.
     for i in range(0, len(lst), n):
         yield lst[i:i+n]
 
 def import_watch_history(json_path: Path):
+    # Main import logic: parse, dedup, filter, fetch metadata, upsert to DB.
     load_env()
     store.init_db()
 
@@ -77,13 +87,13 @@ def import_watch_history(json_path: Path):
 
     print(f"[import] Unique video IDs in file: {len(ordered)} (from {total_rows} rows)")
 
-    # Work on a deeper window from the end so we can find 300 long-form even if recent entries are Shorts
+    # Limit scan window
     if len(ordered) > SCAN_WINDOW:
         ordered = ordered[-SCAN_WINDOW:]
         print(f"[import] Scanning the most recent {SCAN_WINDOW} unique IDs")
 
-    # Fetch details
     print(f"[import] Fetching video details in chunks (this can take a bit)...")
+    # Fetch metadata in chunks
     id_to_item = {}
     fetched = 0
     for chunk in _chunk([v for _ts, v in ordered], 50):
@@ -95,12 +105,11 @@ def import_watch_history(json_path: Path):
             fetched += len(chunk)
         except Exception as e:
             print("[warn] videos.list failed for a chunk:", e)
-        # tiny pause to be gentle with quota
         sleep(0.15)
 
     print(f"[import] Details fetched for ~{len(id_to_item)} IDs (requested {fetched})")
 
-    # Long-form filter
+    # Filter long-form videos
     def _is_longform(v):
         dur = int(v.get("duration_sec", 0) or 0)
         title_low = (v.get("title") or "").lower()
@@ -110,11 +119,10 @@ def import_watch_history(json_path: Path):
             return False
         return True
 
-    # Build the most-recent list of long-form IDs, keeping original timestamps
     long_ids = set(vid for vid, it in id_to_item.items() if _is_longform(it))
     print(f"[import] Long-form candidates (≥{MIN_DURATION_SEC}s): {len(long_ids)}")
 
-    # Pick the most recent MAX_IMPORT among long_ids
+    # Pick most recent
     recent_long = [(ts, vid) for ts, vid in ordered if vid in long_ids]
     recent_long = recent_long[-MAX_IMPORT:]
     print(f"[import] Will import {len(recent_long)} most-recent long-form videos (target {MAX_IMPORT})")
@@ -124,11 +132,11 @@ def import_watch_history(json_path: Path):
               "Try increasing SCAN_WINDOW or lowering LONG_MIN_SEC.")
         return
 
-    # Upsert metadata for the exact set we’re importing
+    # Upsert metadata
     to_upsert = [id_to_item[vid] for _ts, vid in recent_long if vid in id_to_item]
     store.upsert_videos(to_upsert)
 
-    # Write history (DB + CSV) with original timestamps
+    # Add history
     for ts, vid in recent_long:
         store.add_history(vid, dwell_sec=0, disliked=0, skipped=0, ts_override=ts, log_to_csv=True)
 
@@ -136,6 +144,7 @@ def import_watch_history(json_path: Path):
     print("CSV:", store.history_csv_path())
 
 def main():
+    # CLI entry: validate args and run import_watch_history().
     if len(sys.argv) < 2:
         print("Usage: python -m src.import_takeout /full/path/to/watch-history.json")
         sys.exit(1)

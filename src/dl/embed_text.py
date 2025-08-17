@@ -1,11 +1,14 @@
 """
-Compute text embeddings for videos and store them in SQLite as BLOBs.
+embed_text.py — Compute text embeddings for video metadata and persist to SQLite.
 
-Usage:
-  python -m src.dl.embed_text --model sentence-transformers/all-MiniLM-L6-v2 --batch 64
+- Uses SentenceTransformers (default: all-MiniLM-L6-v2) to embed titles + descriptions
+- Stores embeddings as float32 BLOBs in video_text_embeds table
+- Safe to re-run: uses UPSERT to update existing rows
+- Supports batching, model selection, overwrite mode, and quick test limits
+- Entry point: `python -m src.dl.embed_text --model ... --batch ...`
 
-It creates/updates table:
-  video_text_embeds(video_id TEXT PRIMARY KEY, dim INTEGER, model TEXT, updated_at TEXT, emb BLOB)
+This script underpins semantic search & recommendation ranking by enabling
+vector-based retrieval directly from the local SQLite store.
 """
 
 from __future__ import annotations
@@ -14,13 +17,11 @@ from typing import Iterable, Tuple, Optional, List
 import numpy as np
 from tqdm import tqdm
 
-# Use your project's DB connector if available
 try:
-    from src import store  # your existing module
+    from src import store
     def get_conn() -> sqlite3.Connection:
         return store.get_conn()
 except Exception:
-    # Fallback: env var DB path (if someone runs this standalone)
     def get_conn() -> sqlite3.Connection:
         db_path = os.getenv("YTCLI_DB", "data/store.sqlite3")
         conn = sqlite3.connect(db_path)
@@ -28,7 +29,7 @@ except Exception:
         return conn
 
 def _videos_iter(cur: sqlite3.Cursor, limit: Optional[int]=None) -> Iterable[Tuple[str,str,str]]:
-    # Try to be robust to slightly different schemas
+    # Yield (video_id, title, desc) from videos table with fallback column names.
     cols = [r[1] for r in cur.execute("PRAGMA table_info(videos)").fetchall()]
     id_col = "id" if "id" in cols else ("video_id" if "video_id" in cols else None)
     title_col = "title" if "title" in cols else None
@@ -60,14 +61,16 @@ def _existing_ids(cur: sqlite3.Cursor, model_name: str) -> set:
     return {r[0] for r in cur.fetchall()}
 
 def _encode_texts(texts: List[str], model_name: str, batch: int) -> np.ndarray:
+    # Batch-encode texts into normalized embeddings using SentenceTransformers.
     from sentence_transformers import SentenceTransformer
-    model = SentenceTransformer(model_name, device="cpu")  # keep CPU-friendly by default
+    model = SentenceTransformer(model_name, device="cpu")
     embs = []
     for i in tqdm(range(0, len(texts), batch), desc="Encoding"):
         embs.append(model.encode(texts[i:i+batch], normalize_embeddings=True))
     return np.vstack(embs)
 
 def main():
+    # CLI entrypoint: parse args, fetch videos, encode texts, and write embeddings.
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", default="sentence-transformers/all-MiniLM-L6-v2")
     ap.add_argument("--batch", type=int, default=64)
@@ -83,7 +86,6 @@ def main():
     for vid, title, desc in _videos_iter(cur, limit=args.limit):
         if not args.overwrite and vid in existing: 
             continue
-        # Simple text recipe: title + description (trim to keep it snappy)
         text = (title + " [SEP] " + (desc[:1000] if desc else "")).strip()
         if not text:
             text = title or "untitled"
