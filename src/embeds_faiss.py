@@ -13,11 +13,11 @@ DATA_DIR = os.getenv("DATA_DIR", "data")
 INDEX_PATH = os.path.join(DATA_DIR, "faiss.index")
 META_PATH  = os.path.join(DATA_DIR, "faiss.meta.json")
 
-_MODEL_NAME = "BAAI/bge-small-en-v1.5"   # 384-dim, lightweight
+_MODEL_NAME = "BAAI/bge-small-en-v1.5"  # 384-dim, lightweight
 _EMBEDDER = None
 _INDEX = None
-_IDS = []          # row -> video_id
-_DOC_HASH = ""     # to detect store changes
+_IDS = []  # row -> video_id
+_DOC_HASH = ""  # to detect store changes
 
 def _get_embedder():
     global _EMBEDDER
@@ -67,8 +67,7 @@ def _load():
 def rebuild(videos):
     global _INDEX, _IDS, _DOC_HASH
     texts = [_video_to_text(v) for v in videos]
-    ids   = [v["id"] for v in videos if v.get("id")]
-    # Keep vectors aligned with ids
+    ids = [v["id"] for v in videos if v.get("id")]
     X = _embed(texts)
     d = X.shape[1]
     index = faiss.IndexFlatIP(d)  # inner product on normalized vectors == cosine
@@ -98,7 +97,6 @@ def search(query_texts, topn=200):
     Q = _embed(query_texts)
     # average queries into a single centroid (simple & robust)
     q = np.mean(Q, axis=0, keepdims=True)
-    # already normalized by _embed
     D, I = _INDEX.search(q, topn)
     scores = D[0].tolist()
     idxs = I[0].tolist()

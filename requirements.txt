@@ -1,4 +1,4 @@
-# --- Core scientific stack ---
+# Core scientific stack
 numpy==1.26.4
 scipy==1.11.4
 pandas==2.2.2
@@ -6,33 +6,31 @@ scikit-learn==1.5.1
 joblib==1.4.2
 tqdm==4.66.4
 
-# --- Utilities / misc ---
+# Utilities / misc
 requests==2.32.3
 tabulate==0.9.0
 langdetect==1.0.9
 python-dotenv==1.1.1
 typing-extensions>=4.9.0
 
-# --- Recommenders ---
+# Recommenders
 lightfm==1.17
 
-# --- Deep learning / embeddings (needed if NN_RERANK=1) ---
-# Torch wheels are platform-specific. You can keep this line, but on Apple Silicon
-# it's often better to install torch separately from pytorch.org if this fails.
+# Deep learning / embeddings (needed if NN_RERANK=1)
 torch>=2.2
 sentence-transformers==2.7.0
 transformers>=4.41.0
 tokenizers>=0.15.2
 
-# --- API / Web server / UI ---
+# API / Web server / UI
 fastapi==0.115.0
 pydantic>=2.6
 uvicorn[standard]==0.30.6
 streamlit==1.36.0
 
-# --- Google APIs ---
+# Google APIs
 google-api-python-client==2.137.0
 google-auth-oauthlib==1.2.0
 
-# --- Optional: only if you use src/embeds_faiss.py ---
+# Optional: only if you use src/embeds_faiss.py
 # faiss-cpu==1.7.4
