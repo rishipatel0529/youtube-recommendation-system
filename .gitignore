@@ -1,4 +1,4 @@
-# --- Python / tooling
+# Python / tooling
 __pycache__/
 api/__pycache__/
 *.py[cod]
@@ -12,21 +12,21 @@ api/__pycache__/
 .ruff_cache/
 .ipynb_checkpoints/
 
-# --- Virtual envs
+# Virtual envs
 .venv/
 venv/
 env/
 
-# --- Editors/OS
+# Editors/OS
 .vscode/
 .idea/
 .DS_Store
 
-# --- Local config / secrets
+# Local config / secrets
 .env
 *.env.local
 
-# --- Data & runtime artifacts
+# Data & runtime artifacts
 data/
 !data/.keep
 *.db
@@ -36,7 +36,7 @@ data/
 *_cache.json
 *.csv
 
-# Specific files from your tree:
+# Specific files from tree:
 ab_report.csv
 history.csv
 liked_history.csv
@@ -49,14 +49,14 @@ app.db
 app.db.bak
 store.sqlite3
 
-# --- Models / weights / artifacts
+# Models / weights / artifacts
 *.pkl
 *.joblib
 *.pt
 *.bin
 *.onnx
 
-# --- Docker noise
+# Docker noise
 **/.cache/
 .headers
 .mode
