@@ -2,6 +2,14 @@
 
 > **TL;DR**: Two‑stage YouTube recommender (LightFM candidates → TFRS ranker) with CLI + FastAPI + UI, realtime personalization (favorites/blocks/filters), Shorts filtering, and offline evaluation (Recall@K / NDCG / MAP). Designed for portfolio‑quality clarity and reproducibility.
 
+<p align="center">
+  <img src="docs/img/ui_grid.jpg" width="900" alt="Recommendations UI - grid view"/>
+</p>
+
+<p align="center">
+  <img src="docs/img/ui_controls.jpg" width="420" alt="UI Controls"/>
+</p>
+
 ---
 
 ## Features
@@ -49,22 +57,6 @@
                                          v
                       FastAPI (/recs, /control/*) + CLI + UI
 ```
-
----
-
-## Screens
-
-<p align="center">
-  <img src="docs/img/ui_controls.jpg" width="420" alt="UI Controls"/>
-</p>
-
-<p align="center">
-  <img src="docs/img/ui_grid.jpg" width="900" alt="UI Recommendation Grid"/>
-</p>
-
-<p align="center">
-  <img src="docs/img/ab_report.jpg" width="420" alt="A/B Variant Metrics JSON"/>
-</p>
 
 ---
 
@@ -246,6 +238,10 @@ python -m src.eval_offline --k 10 --split loo --report out/offline_metrics.json
 - Variant **A** — CTR: `0.0773`, Like‑rate: `0.5905`  
 - Variant **B** — CTR: `0.0777`, Like‑rate: `0.6103`  
 - **Delta** — CTR: `+0.00040`, Like‑rate: `+0.0198`
+
+<p align="center">
+  <img src="docs/img/ab_report.jpg" width="420" alt="A/B variant metrics JSON"/>
+</p>
 
 > Use these as illustrative numbers; your results will vary by history and settings.
 
